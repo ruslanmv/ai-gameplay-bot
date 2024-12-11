@@ -84,7 +84,7 @@ project/
 ```mermaid
 graph TD
     A[Start: Analyze Gameplay Videos] --> B[Extract Character Actions and Motions]
-    B --> C[Map Actions to Inputs (Keyboard/Mouse/Gamepad)]
+    B --> C[Map Actions to Inputs Keyboard/Mouse/Gamepad]
     C --> D[Build Dataset from Video-Input Mappings]
     D --> E1[Train Initial Neural Network Model]
     D --> E2[Train Initial Transformer Model]
