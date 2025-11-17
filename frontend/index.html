@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Gameplay Bot Control Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+    .app {
+      max-width: 900px;
+      width: 100%;
+      padding: 24px;
+    }
+    .card {
+      background: #020617;
+      border-radius: 16px;
+      padding: 20px 24px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      margin-bottom: 20px;
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.8rem;
+      margin-bottom: 4px;
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #9ca3af;
+      font-size: 0.9rem;
+      margin-bottom: 18px;
+    }
+    .section-title {
+      font-size: 1.05rem;
+      margin: 0 0 6px;
+    }
+    .section-subtitle {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      margin-left: 8px;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .dot.on {
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+    }
+    .dot.off {
+      background: #ef4444;
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      font-size: 0.8rem;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.05s ease, box-shadow 0.05s ease, background 0.15s ease;
+    }
+    button.primary {
+      background: linear-gradient(135deg, #4f46e5, #22c55e);
+      color: white;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.35);
+    }
+    button.secondary {
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+    button.danger {
+      background: rgba(127, 29, 29, 0.9);
+      color: #fecaca;
+      border: 1px solid rgba(248, 113, 113, 0.7);
+    }
+    button.small {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+    button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+    select {
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .label {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+    .status-box {
+      font-size: 0.85rem;
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 10px;
+      padding: 8px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      margin-top: 10px;
+      min-height: 40px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .status-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-label span {
+      font-weight: 400;
+    }
+    .footer {
+      margin-top: 10px;
+      font-size: 0.75rem;
+      color: #6b7280;
+      text-align: right;
+    }
+    .error {
+      color: #fecaca;
+    }
+    .success {
+      color: #bbf7d0;
+    }
+    .inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card">
+      <h1>AI Gameplay Bot</h1>
+      <div class="subtitle">
+        Simple control panel to start/stop the services and choose which model to use.
+        No technical commands required – just click the buttons.
+      </div>
+
+      <div class="inline">
+        <span class="badge">Backend: <span id="backend-url-label"></span></span>
+        <button id="refresh-status" class="secondary small">Refresh status</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>1. Services status & power controls</h2>
+      <div class="grid">
+        <div>
+          <div class="section-title">
+            Neural Network service
+            <span class="status-pill">
+              <span id="nn-dot" class="dot off"></span>
+              <span id="nn-status-text">Unknown</span>
+            </span>
+          </div>
+          <div class="section-subtitle">
+            Handles gameplay decisions using the neural network model (port 5000).
+          </div>
+          <div class="controls-row">
+            <button id="btn-start-nn" class="primary">Start NN</button>
+            <button id="btn-stop-nn" class="danger">Stop NN</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title">
+            Transformer service
+            <span class="status-pill">
+              <span id="tf-dot" class="dot off"></span>
+              <span id="tf-status-text">Unknown</span>
+            </span>
+          </div>
+          <div class="section-subtitle">
+            Handles gameplay decisions using the transformer model (port 5001).
+          </div>
+          <div class="controls-row">
+            <button id="btn-start-tf" class="primary">Start Transformer</button>
+            <button id="btn-stop-tf" class="danger">Stop Transformer</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls-row" style="margin-top: 16px;">
+        <button id="btn-start-all" class="primary">Start both services</button>
+        <button id="btn-stop-all" class="danger">Stop both services</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>2. Choose active model</h2>
+      <div class="grid">
+        <div>
+          <div class="label">Current active model:</div>
+          <div class="status-label">
+            <span id="active-model-label">Unknown</span>
+          </div>
+          <div class="section-subtitle">
+            This is the model the game/controller will use for predictions.
+          </div>
+        </div>
+        <div>
+          <div class="label">Change active model</div>
+          <div class="controls-row">
+            <select id="model-select">
+              <option value="nn">Neural Network</option>
+              <option value="transformer">Transformer</option>
+            </select>
+            <button id="btn-apply-model" class="secondary">Apply</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>3. Test prediction</h2>
+      <div class="section-subtitle">
+        Quickly test that the system responds. The app will send a random state
+        to the selected model and show the predicted action.
+      </div>
+
+      <div class="grid">
+        <div>
+          <div class="label">Model to test</div>
+          <select id="test-model-select">
+            <option value="nn">Neural Network</option>
+            <option value="transformer">Transformer</option>
+          </select>
+          <div class="controls-row" style="margin-top: 10px;">
+            <button id="btn-test-predict" class="primary">Run test prediction</button>
+          </div>
+        </div>
+        <div>
+          <div class="label">Result</div>
+          <div id="test-result" class="status-box">
+            No test run yet.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>4. System messages</h2>
+      <div id="log-box" class="status-box"></div>
+      <div class="footer">
+        Tip: if something stays "Unknown", check that the backend control service is running.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==== CONFIGURATION ====
+    // Change this if your control backend runs on a different port or host
+    const CONTROL_API_BASE = "http://localhost:8000";
+
+    // ==== DOM SHORTCUTS ====
+    const nnDot = document.getElementById("nn-dot");
+    const nnStatusText = document.getElementById("nn-status-text");
+    const tfDot = document.getElementById("tf-dot");
+    const tfStatusText = document.getElementById("tf-status-text");
+    const activeModelLabel = document.getElementById("active-model-label");
+    const backendUrlLabel = document.getElementById("backend-url-label");
+    const logBox = document.getElementById("log-box");
+    const testResultBox = document.getElementById("test-result");
+
+    backendUrlLabel.textContent = CONTROL_API_BASE;
+
+    function setDot(el, status) {
+      el.classList.remove("on", "off");
+      if (status === "on") {
+        el.classList.add("on");
+      } else {
+        el.classList.add("off");
+      }
+    }
+
+    function logMessage(message, type = "info") {
+      const now = new Date();
+      const time = now.toLocaleTimeString();
+      const prefix = type === "error" ? "[ERROR]" : "[INFO]";
+      const colorClass = type === "error" ? "error" : "success";
+
+      const line = document.createElement("div");
+      line.innerHTML = `<span class="${colorClass}">${prefix}</span> ${time} - ${message}`;
+
+      if (logBox.firstChild) {
+        logBox.insertBefore(line, logBox.firstChild);
+      } else {
+        logBox.appendChild(line);
+      }
+    }
+
+    async function callApi(path, options = {}) {
+      const url = CONTROL_API_BASE + path;
+      try {
+        const res = await fetch(url, {
+          headers: { "Content-Type": "application/json" },
+          ...options
+        });
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(`HTTP ${res.status}: ${text}`);
+        }
+        const contentType = res.headers.get("content-type") || "";
+        if (contentType.includes("application/json")) {
+          return await res.json();
+        }
+        return {};
+      } catch (err) {
+        logMessage(`Request to ${path} failed: ${err.message}`, "error");
+        throw err;
+      }
+    }
+
+    async function refreshStatus() {
+      try {
+        const status = await callApi("/api/status");
+        const nnRunning = !!status.nn_running;
+        const tfRunning = !!status.transformer_running;
+        const activeModel = status.active_model || "unknown";
+
+        setDot(nnDot, nnRunning ? "on" : "off");
+        nnStatusText.textContent = nnRunning ? "Running" : "Stopped";
+
+        setDot(tfDot, tfRunning ? "on" : "off");
+        tfStatusText.textContent = tfRunning ? "Running" : "Stopped";
+
+        activeModelLabel.textContent =
+          activeModel === "nn"
+            ? "Neural Network"
+            : activeModel === "transformer"
+            ? "Transformer"
+            : "Unknown";
+
+        logMessage("Status updated.");
+      } catch (err) {
+        // error already logged by callApi
+      }
+    }
+
+    document.getElementById("refresh-status").addEventListener("click", refreshStatus);
+
+    document.getElementById("btn-start-nn").addEventListener("click", async () => {
+      try {
+        await callApi("/api/start_nn", { method: "POST" });
+        logMessage("Neural Network service started.");
+        await refreshStatus();
+      } catch (_) {}
+    });
+
+    document.getElementById("btn-stop-nn").addEventListener("click", async () => {
+      try {
+        await callApi("/api/stop_nn", { method: "POST" });
+        logMessage("Neural Network service stopped.");
+        await refreshStatus();
+      } catch (_) {}
+    });
+
+    document.getElementById("btn-start-tf").addEventListener("click", async () => {
+      try {
+        await callApi("/api/start_transformer", { method: "POST" });
+        logMessage("Transformer service started.");
+        await refreshStatus();
+      } catch (_) {}
+    });
+
+    document.getElementById("btn-stop-tf").addEventListener("click", async () => {
+      try {
+        await callApi("/api/stop_transformer", { method: "POST" });
+        logMessage("Transformer service stopped.");
+        await refreshStatus();
+      } catch (_) {}
+    });
+
+    document.getElementById("btn-start-all").addEventListener("click", async () => {
+      try {
+        await callApi("/api/start_nn", { method: "POST" });
+        await callApi("/api/start_transformer", { method: "POST" });
+        logMessage("Both services started.");
+        await refreshStatus();
+      } catch (_) {}
+    });
+
+    document.getElementById("btn-stop-all").addEventListener("click", async () => {
+      try {
+        await callApi("/api/stop_nn", { method: "POST" });
+        await callApi("/api/stop_transformer", { method: "POST" });
+        logMessage("Both services stopped.");
+        await refreshStatus();
+      } catch (_) {}
+    });
+
+    document.getElementById("btn-apply-model").addEventListener("click", async () => {
+      const select = document.getElementById("model-select");
+      const model = select.value === "transformer" ? "transformer" : "nn";
+      try {
+        await callApi("/api/set_active_model", {
+          method: "POST",
+          body: JSON.stringify({ model })
+        });
+        logMessage(`Active model set to: ${model === "nn" ? "Neural Network" : "Transformer"}`);
+        await refreshStatus();
+      } catch (_) {}
+    });
+
+    document.getElementById("btn-test-predict").addEventListener("click", async () => {
+      const model = document.getElementById("test-model-select").value;
+      testResultBox.textContent = "Running test prediction...";
+      try {
+        const res = await callApi("/api/test_predict", {
+          method: "POST",
+          body: JSON.stringify({ model })
+        });
+        const action = res.action ?? "(no action field in response)";
+        testResultBox.textContent = `Model: ${
+          model === "nn" ? "Neural Network" : "Transformer"
+        }\nPredicted action: ${action}`;
+        logMessage("Test prediction completed.");
+      } catch (err) {
+        testResultBox.textContent =
+          "Error while running test prediction. Check that the services are running.";
+      }
+    });
+
+    // Initial status on page load
+    refreshStatus();
+  </script>
+</body>
+</html>
