@@ -69,6 +69,12 @@ def predict():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+@app.route("/health", methods=["GET"])
+def health():
+    """Health check endpoint."""
+    return jsonify({"status": "healthy", "service": "neural_network"}), 200
+
 if __name__ == "__main__":
     # Run the Flask server
     app.run(host="0.0.0.0", port=5000)
