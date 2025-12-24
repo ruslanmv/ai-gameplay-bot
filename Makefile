@@ -1,6 +1,6 @@
 # Makefile for AI Gameplay Bot
 
-.PHONY: help install setup data train test clean run-nn run-transformer run-control run-all stop lint format
+.PHONY: help install setup data train test clean run-nn run-transformer run-control run-all stop lint format health-check
 
 # Default target
 help:
@@ -8,6 +8,7 @@ help:
 	@echo ""
 	@echo "  make install          - Install Python dependencies"
 	@echo "  make setup            - Complete project setup (install + data)"
+	@echo "  make health-check     - Run installation and health check"
 	@echo "  make data             - Generate sample data"
 	@echo "  make train-nn         - Train Neural Network model"
 	@echo "  make train-transformer - Train Transformer model"
@@ -28,8 +29,8 @@ help:
 # Installation
 install:
 	@echo "Installing dependencies..."
-	pip install --upgrade pip
-	pip install -r requirements.txt
+	pip install --upgrade pip || true
+	pip install -r requirements.txt --ignore-installed pyparsing || pip install -r requirements.txt
 	@echo "Installation complete!"
 
 # Setup
@@ -66,6 +67,11 @@ test-coverage:
 	@echo "Running tests with coverage..."
 	pytest tests/ --cov=models --cov=scripts --cov=deployment --cov-report=html --cov-report=term
 	@echo "Coverage report generated in htmlcov/"
+
+# Health check
+health-check:
+	@echo "Running installation and health check..."
+	python test_installation.py
 
 # Running services
 run-nn:
