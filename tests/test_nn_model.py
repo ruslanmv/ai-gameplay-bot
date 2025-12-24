@@ -27,6 +27,7 @@ class TestGameplayNN:
     def test_forward_pass(self):
         """Test forward pass produces correct output shape."""
         model = GameplayNN(input_size=128, hidden_size=64, output_size=10)
+        model.eval()  # Set to eval mode to avoid batch norm issues with batch size 1
         test_input = torch.randn(1, 128)
         output = model(test_input)
 
@@ -75,6 +76,7 @@ class TestConvGameplayNN:
     def test_conv_forward_pass(self):
         """Test forward pass with image input."""
         model = ConvGameplayNN(num_classes=10, input_channels=3)
+        model.eval()  # Set to eval mode to avoid batch norm issues with batch size 1
         test_image = torch.randn(1, 3, 224, 224)
         output = model(test_image)
 
