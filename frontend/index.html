@@ -1,489 +1,942 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>AI Gameplay Bot Control Panel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-    body {
-      margin: 0;
-      padding: 0;
-      background: #0f172a;
-      color: #e5e7eb;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-    }
-    .app {
-      max-width: 900px;
-      width: 100%;
-      padding: 24px;
-    }
-    .card {
-      background: #020617;
-      border-radius: 16px;
-      padding: 20px 24px;
-      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.7);
-      border: 1px solid rgba(148, 163, 184, 0.25);
-      margin-bottom: 20px;
-    }
-    h1 {
-      margin-top: 0;
-      font-size: 1.8rem;
-      margin-bottom: 4px;
-    }
-    h2 {
-      margin-top: 0;
-      font-size: 1.3rem;
-      margin-bottom: 8px;
-    }
-    .subtitle {
-      color: #9ca3af;
-      font-size: 0.9rem;
-      margin-bottom: 18px;
-    }
-    .section-title {
-      font-size: 1.05rem;
-      margin: 0 0 6px;
-    }
-    .section-subtitle {
-      font-size: 0.85rem;
-      color: #9ca3af;
-      margin-bottom: 8px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
-    }
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      margin-left: 8px;
-    }
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-    .dot.on {
-      background: #22c55e;
-      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
-    }
-    .dot.off {
-      background: #ef4444;
-      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
-    }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      font-size: 0.8rem;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-    }
-    .controls-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    button {
-      border: none;
-      border-radius: 999px;
-      padding: 8px 18px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: transform 0.05s ease, box-shadow 0.05s ease, background 0.15s ease;
-    }
-    button.primary {
-      background: linear-gradient(135deg, #4f46e5, #22c55e);
-      color: white;
-      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.35);
-    }
-    button.secondary {
-      background: rgba(15, 23, 42, 0.9);
-      color: #e5e7eb;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-    }
-    button.danger {
-      background: rgba(127, 29, 29, 0.9);
-      color: #fecaca;
-      border: 1px solid rgba(248, 113, 113, 0.7);
-    }
-    button.small {
-      padding: 6px 12px;
-      font-size: 0.8rem;
-    }
-    button:active {
-      transform: translateY(1px);
-      box-shadow: none;
-    }
-    select {
-      background: rgba(15, 23, 42, 0.9);
-      color: #e5e7eb;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      padding: 6px 12px;
-      font-size: 0.9rem;
-      outline: none;
-    }
-    .label {
-      font-size: 0.85rem;
-      color: #9ca3af;
-      margin-bottom: 4px;
-    }
-    .status-box {
-      font-size: 0.85rem;
-      background: rgba(15, 23, 42, 0.8);
-      border-radius: 10px;
-      padding: 8px 10px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      margin-top: 10px;
-      min-height: 40px;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    .status-label {
-      font-weight: 600;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .status-label span {
-      font-weight: 400;
-    }
-    .footer {
-      margin-top: 10px;
-      font-size: 0.75rem;
-      color: #6b7280;
-      text-align: right;
-    }
-    .error {
-      color: #fecaca;
-    }
-    .success {
-      color: #bbf7d0;
-    }
-    .inline {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Gameplay | Enterprise Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            /* Derived from your usage */
+            --bg-dark: #0f172a; /* Slate 900 */
+            --bg-panel: rgba(30, 41, 59, 0.5);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --primary: #3b82f6; /* Blue 500 */
+            --accent: #8b5cf6; /* Violet 500 */
+            --success: #10b981;
+            --danger: #ef4444;
+            --glass: blur(12px);
+        }
+
+        * {
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at top right, #1e1b4b, transparent 40%),
+                              radial-gradient(circle at bottom left, #0f172a, transparent 40%);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 260px;
+            background: rgba(15, 23, 42, 0.95);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            z-index: 10;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            color: var(--text-dim);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+        }
+
+        .nav-icon { width: 20px; text-align: center; }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        .github-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #24292e;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 12px;
+            transition: transform 0.2s;
+            justify-content: center;
+        }
+        .github-link:hover { transform: translateY(-2px); background: #2f363d; }
+
+        /* --- MAIN CONTENT CONTAINER --- */
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            /* Flex column to hold views, views handle their own grid/layout */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- VIEW MANAGEMENT --- */
+        .view-section {
+            display: none; /* Hidden by default */
+            height: 100%;
+            width: 100%;
+            overflow-y: auto;
+            padding-right: 4px; /* Space for scrollbar */
+        }
+
+        .view-section.active {
+            display: grid; /* Default grid for dashboard, overriden for others if needed */
+        }
+
+        /* --- DASHBOARD GRID --- */
+        #view-dashboard {
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: auto auto 1fr;
+            gap: 24px;
+        }
+
+        /* --- COMMON HEADERS --- */
+        .header-section {
+            grid-column: 1 / -1;
+            grid-row: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            min-height: 60px;
+        }
+
+        h1 { font-size: 24px; margin: 0; font-weight: 600; }
+        .subtitle { color: var(--text-dim); font-size: 14px; margin-top: 4px; }
+
+        .api-status {
+            font-size: 12px;
+            padding: 6px 12px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .api-dot { width: 6px; height: 6px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite; }
+
+        /* --- CARDS --- */
+        .card {
+            background: var(--bg-panel);
+            backdrop-filter: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .card-title { font-size: 16px; font-weight: 600; color: var(--text-main); }
+        .card-desc { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+
+        /* --- DASHBOARD SPECIFIC --- */
+        .models-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .model-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .model-card.active-selection {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .status-running { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .status-stopped { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+        .btn-group { display: flex; gap: 8px; margin-top: 16px; }
+
+        .btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 6px;
+            border: none;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-start { background: var(--primary); color: white; }
+        .btn-start:hover { background: #2563eb; }
+        .btn-stop { background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid var(--border); }
+        .btn-stop:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: var(--danger); }
+
+        .status-panel { grid-column: 1; grid-row: 2; }
+        .controls-panel { grid-column: 2; grid-row: 2 / 4; }
+        .terminal-container { grid-column: 1; grid-row: 3; min-height: 400px; height: 100%; }
+
+        /* --- MODELS VIEW TABLE --- */
+        #view-models {
+            display: none; /* Overridden by .active */
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 24px;
+        }
+        #view-models.active { display: grid; }
+
+        .table-container {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .table-container th {
+            text-align: left;
+            padding: 12px 16px;
+            color: var(--text-dim);
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
+        }
+
+        .table-container td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .table-row:hover { background: rgba(255,255,255,0.02); }
+
+        .chip {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+        }
+
+        /* --- SETTINGS VIEW --- */
+        #view-settings {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-content: start;
+        }
+        #view-settings.active { display: grid; }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .setting-info { flex: 1; padding-right: 16px; }
+        .setting-label { font-weight: 500; display: block; margin-bottom: 4px; }
+        .setting-desc { font-size: 12px; color: var(--text-dim); }
+
+        input[type="text"], input[type="number"] {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            width: 150px;
+        }
+
+        input[type="checkbox"] {
+            width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary);
+        }
+
+        /* --- CONTROLS INTERNAL --- */
+        .control-group { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+        .select-wrapper { position: relative; margin-top: 10px; }
+        select {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            appearance: none;
+            cursor: pointer;
+        }
+        .btn-action {
+            width: 100%; padding: 12px; margin-top: 12px;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;
+        }
+        .btn-action:active { transform: scale(0.98); }
+
+        /* --- TERMINAL --- */
+        .terminal {
+            background: #000; border-radius: 8px; flex: 1; padding: 12px;
+            font-family: 'JetBrains Mono', monospace; font-size: 12px;
+            overflow-y: auto; border: 1px solid #333; height: 100%;
+        }
+        .log-line { margin-bottom: 4px; display: block; }
+        .log-time { color: #555; margin-right: 8px; }
+        .log-info { color: #10b981; }
+        .log-error { color: #ef4444; }
+        .log-warn { color: #f59e0b; }
+        .log-sys { color: #10b981; }
+
+        /* --- CHART --- */
+        .chart-container { height: 150px; margin-top: 20px; position: relative; }
+        .test-result-box {
+            background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px; margin-top: 12px;
+            font-family: 'JetBrains Mono', monospace; font-size: 12px; min-height: 40px;
+            border-left: 3px solid var(--accent); transition: all 0.3s;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Responsive Fix */
+        @media (max-width: 900px) {
+            .main-content { display: flex; flex-direction: column; }
+            #view-dashboard, #view-models, #view-settings { display: flex; flex-direction: column; }
+            .sidebar { width: 70px; padding: 16px 12px; }
+            .brand { font-size: 0; }
+            .brand-icon { margin-left: 5px; }
+            .nav-item { justify-content: center; padding: 12px; }
+            .nav-icon { margin: 0; }
+            .sidebar-footer { display: none; }
+            .controls-panel { order: -1; }
+            .terminal-container { min-height: 250px; }
+        }
+    </style>
 </head>
 <body>
-  <div class="app">
-    <div class="card">
-      <h1>AI Gameplay Bot</h1>
-      <div class="subtitle">
-        Simple control panel to start/stop the services and choose which model to use.
-        No technical commands required – just click the buttons.
-      </div>
 
-      <div class="inline">
-        <span class="badge">Backend: <span id="backend-url-label"></span></span>
-        <button id="refresh-status" class="secondary small">Refresh status</button>
-      </div>
+<!-- SIDEBAR -->
+<nav class="sidebar">
+    <div class="brand">
+        <div class="brand-icon">⚡</div>
+        AI Gameplay
     </div>
 
-    <div class="card">
-      <h2>1. Services status & power controls</h2>
-      <div class="grid">
-        <div>
-          <div class="section-title">
-            Neural Network service
-            <span class="status-pill">
-              <span id="nn-dot" class="dot off"></span>
-              <span id="nn-status-text">Unknown</span>
-            </span>
-          </div>
-          <div class="section-subtitle">
-            Handles gameplay decisions using the neural network model (port 5000).
-          </div>
-          <div class="controls-row">
-            <button id="btn-start-nn" class="primary">Start NN</button>
-            <button id="btn-stop-nn" class="danger">Stop NN</button>
-          </div>
-        </div>
-
-        <div>
-          <div class="section-title">
-            Transformer service
-            <span class="status-pill">
-              <span id="tf-dot" class="dot off"></span>
-              <span id="tf-status-text">Unknown</span>
-            </span>
-          </div>
-          <div class="section-subtitle">
-            Handles gameplay decisions using the transformer model (port 5001).
-          </div>
-          <div class="controls-row">
-            <button id="btn-start-tf" class="primary">Start Transformer</button>
-            <button id="btn-stop-tf" class="danger">Stop Transformer</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="controls-row" style="margin-top: 16px;">
-        <button id="btn-start-all" class="primary">Start both services</button>
-        <button id="btn-stop-all" class="danger">Stop both services</button>
-      </div>
+    <div id="nav-dashboard" class="nav-item active" onclick="switchView('dashboard')">
+        <span class="nav-icon">📊</span> Dashboard
+    </div>
+    <div id="nav-models" class="nav-item" onclick="switchView('models')">
+        <span class="nav-icon">🧠</span> Models
+    </div>
+    <div id="nav-settings" class="nav-item" onclick="switchView('settings')">
+        <span class="nav-icon">⚙️</span> Settings
     </div>
 
-    <div class="card">
-      <h2>2. Choose active model</h2>
-      <div class="grid">
-        <div>
-          <div class="label">Current active model:</div>
-          <div class="status-label">
-            <span id="active-model-label">Unknown</span>
-          </div>
-          <div class="section-subtitle">
-            This is the model the game/controller will use for predictions.
-          </div>
+    <div class="sidebar-footer">
+        <div>v0.1.4 Enterprise</div>
+        <a href="https://github.com/ruslanmv/ai-gameplay-bot" target="_blank" class="github-link">
+            <span>⭐</span> Star on GitHub
+        </a>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT WRAPPER -->
+<main class="main-content">
+
+    <!-- VIEW 1: DASHBOARD -->
+    <div id="view-dashboard" class="view-section active">
+        <!-- HEADER -->
+        <div class="header-section">
+            <div>
+                <h1>Command Center</h1>
+                <div class="subtitle">Real-time orchestration and monitoring</div>
+            </div>
+            <div class="api-status">
+                <div class="api-dot"></div>
+                Backend Connected: <span id="backend-url-label" style="margin-left: 4px; font-family: 'JetBrains Mono';"></span>
+            </div>
         </div>
-        <div>
-          <div class="label">Change active model</div>
-          <div class="controls-row">
-            <select id="model-select">
-              <option value="nn">Neural Network</option>
-              <option value="transformer">Transformer</option>
-            </select>
-            <button id="btn-apply-model" class="secondary">Apply</button>
-          </div>
+
+        <!-- LEFT COLUMN: SYSTEM STATUS -->
+        <div class="card status-panel">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Service Status</div>
+                    <div class="card-desc">Manage inference engines</div>
+                </div>
+                <button id="refresh-status" class="btn-stop" style="width: auto; padding: 6px 12px;">↻ Refresh</button>
+            </div>
+
+            <div class="models-grid">
+                <!-- Neural Network Card -->
+                <div class="model-card" id="card-nn">
+                    <div class="status-badge status-stopped" id="badge-nn">STOPPED</div>
+                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">Neural Network</div>
+                    <div style="font-size: 11px; color: var(--text-dim);">Port 5000 • Low Latency</div>
+                    <div class="btn-group">
+                        <button class="btn btn-start" id="btn-start-nn">Start</button>
+                        <button class="btn btn-stop" id="btn-stop-nn">Stop</button>
+                    </div>
+                </div>
+
+                <!-- Transformer Card -->
+                <div class="model-card" id="card-tf">
+                    <div class="status-badge status-stopped" id="badge-tf">STOPPED</div>
+                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">Transformer</div>
+                    <div style="font-size: 11px; color: var(--text-dim);">Port 5001 • Context Aware</div>
+                    <div class="btn-group">
+                        <button class="btn btn-start" id="btn-start-tf">Start</button>
+                        <button class="btn btn-stop" id="btn-stop-tf">Stop</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-action" id="btn-start-all" style="background: var(--bg-dark); border: 1px solid var(--border);">Start All Services</button>
+                <button class="btn btn-action" id="btn-stop-all" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger);">Stop All</button>
+            </div>
         </div>
-      </div>
+
+        <!-- RIGHT COLUMN: CONTROLS & TEST -->
+        <div class="card controls-panel">
+            <div class="control-group">
+                <div class="card-title">Active Model Strategy</div>
+                <div class="card-desc">Select which model controls the game input.</div>
+
+                <div class="select-wrapper">
+                    <select id="model-select">
+                        <option value="nn">Neural Network (Speed)</option>
+                        <option value="transformer">Transformer (Accuracy)</option>
+                    </select>
+                </div>
+                <button class="btn-action" id="btn-apply-model">Apply Strategy</button>
+
+                <div style="margin-top: 12px; font-size: 12px; color: var(--text-dim);">
+                    Currently Active: <span id="active-model-label" style="color: var(--text-dim); font-weight: 700;">None</span>
+                </div>
+            </div>
+
+            <div>
+                <div class="card-title">Live Inference Test</div>
+                <div class="card-desc">Send dummy state to verify latency.</div>
+
+                <div class="select-wrapper">
+                    <select id="test-model-select">
+                        <option value="nn">Test Neural Network</option>
+                        <option value="transformer">Test Transformer</option>
+                    </select>
+                </div>
+                <button class="btn-action" id="btn-test-predict" style="background: var(--primary);">Run Prediction</button>
+
+                <div id="test-result" class="test-result-box">
+                    Ready to test...
+                </div>
+
+                <!-- Visual Chart for Latency -->
+                <div class="chart-container">
+                    <canvas id="latencyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- TERMINAL LOGS -->
+        <div class="card terminal-container">
+            <div class="card-title" style="margin-bottom: 12px;">System Event Log</div>
+            <div id="log-box" class="terminal">
+                <span class="log-line"><span class="log-time">00:00:00</span> <span class="log-sys">[SYSTEM]</span> Dashboard initialized...</span>
+            </div>
+        </div>
     </div>
 
-    <div class="card">
-      <h2>3. Test prediction</h2>
-      <div class="section-subtitle">
-        Quickly test that the system responds. The app will send a random state
-        to the selected model and show the predicted action.
-      </div>
+    <!-- VIEW 2: MODELS -->
+    <div id="view-models" class="view-section">
+        <div class="header-section">
+            <div>
+                <h1>Model Repository</h1>
+                <div class="subtitle">Manage and deploy available AI architectures</div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-start" style="padding: 10px 20px;">+ Import Model</button>
+            </div>
+        </div>
 
-      <div class="grid">
-        <div>
-          <div class="label">Model to test</div>
-          <select id="test-model-select">
-            <option value="nn">Neural Network</option>
-            <option value="transformer">Transformer</option>
-          </select>
-          <div class="controls-row" style="margin-top: 10px;">
-            <button id="btn-test-predict" class="primary">Run test prediction</button>
-          </div>
+        <div class="card">
+            <div class="card-title">Installed Models</div>
+            <div style="margin-top: 16px; overflow-x: auto;">
+                <table class="table-container">
+                    <thead>
+                        <tr>
+                            <th>Model Name</th>
+                            <th>Architecture</th>
+                            <th>Framework</th>
+                            <th>Accuracy (Val)</th>
+                            <th>Size</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-row">
+                            <td style="font-weight: 600; color: var(--primary);">gameplay_v3_fast.h5</td>
+                            <td><span class="chip">CNN-LSTM</span></td>
+                            <td>TensorFlow</td>
+                            <td>94.2%</td>
+                            <td>45 MB</td>
+                            <td><button class="btn-stop" style="padding: 4px 8px;">Load</button></td>
+                        </tr>
+                        <tr class="table-row">
+                            <td style="font-weight: 600; color: var(--accent);">transformer_xl_ctx.pt</td>
+                            <td><span class="chip">Transformer</span></td>
+                            <td>PyTorch</td>
+                            <td>98.1%</td>
+                            <td>120 MB</td>
+                            <td><button class="btn-stop" style="padding: 4px 8px;">Load</button></td>
+                        </tr>
+                        <tr class="table-row">
+                            <td style="font-weight: 600; color: white;">legacy_net_v1.h5</td>
+                            <td><span class="chip">Dense</span></td>
+                            <td>Keras</td>
+                            <td>76.5%</td>
+                            <td>12 MB</td>
+                            <td><button class="btn-stop" style="color: var(--danger); padding: 4px 8px;">Delete</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div>
-          <div class="label">Result</div>
-          <div id="test-result" class="status-box">
-            No test run yet.
-          </div>
-        </div>
-      </div>
     </div>
 
-    <div class="card">
-      <h2>4. System messages</h2>
-      <div id="log-box" class="status-box"></div>
-      <div class="footer">
-        Tip: if something stays "Unknown", check that the backend control service is running.
-      </div>
+    <!-- VIEW 3: SETTINGS -->
+    <div id="view-settings" class="view-section">
+        <div class="header-section">
+            <div>
+                <h1>System Configuration</h1>
+                <div class="subtitle">Adjust parameters for the simulation environment</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">General Settings</div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <span class="setting-label">API Endpoint</span>
+                    <span class="setting-desc">The base URL for the backend Python server.</span>
+                </div>
+                <input type="text" id="setting-api-url" value="http://localhost:8000">
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <span class="setting-label">Auto-Connect</span>
+                    <span class="setting-desc">Automatically attempt connection on page load.</span>
+                </div>
+                <input type="checkbox" checked>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <span class="setting-label">Safe Mode</span>
+                    <span class="setting-desc">Prevent actions that could crash the game process.</span>
+                </div>
+                <input type="checkbox" checked>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Simulation Parameters</div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <span class="setting-label">Base Latency (ms)</span>
+                    <span class="setting-desc">Artificial delay added to simulation tests.</span>
+                </div>
+                <input type="number" id="setting-latency" value="50">
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <span class="setting-label">Log Verbosity</span>
+                    <span class="setting-desc">Level of detail in the System Event Log.</span>
+                </div>
+                <select style="width: 150px; padding: 8px;">
+                    <option>Info</option>
+                    <option>Debug</option>
+                    <option>Error Only</option>
+                </select>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <button class="btn-stop" onclick="saveConfiguration()">Save Configuration</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <script>
-    // ==== CONFIGURATION ====
-    // Change this if your control backend runs on a different port or host
-    const CONTROL_API_BASE = "http://localhost:8000";
+</main>
 
-    // ==== DOM SHORTCUTS ====
-    const nnDot = document.getElementById("nn-dot");
-    const nnStatusText = document.getElementById("nn-status-text");
-    const tfDot = document.getElementById("tf-dot");
-    const tfStatusText = document.getElementById("tf-status-text");
-    const activeModelLabel = document.getElementById("active-model-label");
-    const backendUrlLabel = document.getElementById("backend-url-label");
-    const logBox = document.getElementById("log-box");
-    const testResultBox = document.getElementById("test-result");
+<script>
+    // --- BACKEND CONFIGURATION ---
+    // Backend base URL (priority: ?backend=... then localStorage, then default)
+    const qs = new URLSearchParams(location.search);
+    const stored = localStorage.getItem("BACKEND_URL");
+    const CONTROL_API_BASE = (qs.get("backend") || stored || "http://localhost:8000").replace(/\/$/, "");
 
-    backendUrlLabel.textContent = CONTROL_API_BASE;
+    document.getElementById("backend-url-label").textContent = CONTROL_API_BASE;
 
-    function setDot(el, status) {
-      el.classList.remove("on", "off");
-      if (status === "on") {
-        el.classList.add("on");
-      } else {
-        el.classList.add("off");
-      }
-    }
-
-    function logMessage(message, type = "info") {
-      const now = new Date();
-      const time = now.toLocaleTimeString();
-      const prefix = type === "error" ? "[ERROR]" : "[INFO]";
-      const colorClass = type === "error" ? "error" : "success";
-
-      const line = document.createElement("div");
-      line.innerHTML = `<span class="${colorClass}">${prefix}</span> ${time} - ${message}`;
-
-      if (logBox.firstChild) {
-        logBox.insertBefore(line, logBox.firstChild);
-      } else {
-        logBox.appendChild(line);
-      }
-    }
-
+    // --- API HELPER ---
     async function callApi(path, options = {}) {
-      const url = CONTROL_API_BASE + path;
-      try {
+        const url = CONTROL_API_BASE + path;
         const res = await fetch(url, {
-          headers: { "Content-Type": "application/json" },
-          ...options
+            headers: { "Content-Type": "application/json" },
+            ...options
         });
+
         if (!res.ok) {
-          const text = await res.text();
-          throw new Error(`HTTP ${res.status}: ${text}`);
+            const text = await res.text().catch(() => "");
+            throw new Error(`HTTP ${res.status}${text ? `: ${text}` : ""}`);
         }
-        const contentType = res.headers.get("content-type") || "";
-        if (contentType.includes("application/json")) {
-          return await res.json();
-        }
+
+        const ct = res.headers.get("content-type") || "";
+        if (ct.includes("application/json")) return await res.json();
         return {};
-      } catch (err) {
-        logMessage(`Request to ${path} failed: ${err.message}`, "error");
-        throw err;
-      }
     }
 
+    // --- VIEW NAVIGATION ---
+    function switchView(viewName) {
+        // Hide all views
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+        // Show selected
+        document.getElementById(`view-${viewName}`).classList.add('active');
+        document.getElementById(`nav-${viewName}`).classList.add('active');
+
+        log(`Switched to ${viewName} view.`, 'sys');
+    }
+
+    // --- STATE MANAGEMENT ---
+    const state = {
+        latencyHistory: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    };
+
+    let chartInstance = null;
+
+    // --- CHART SETUP ---
+    function initChart() {
+        const ctx = document.getElementById('latencyChart').getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 150);
+        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
+        gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+                datasets: [{
+                    label: 'Latency (ms)',
+                    data: state.latencyHistory,
+                    borderColor: '#3b82f6',
+                    backgroundColor: gradient,
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: {
+                        display: true,
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: '#64748b', font: { size: 10 } }
+                    }
+                },
+                animation: { duration: 500 }
+            }
+        });
+    }
+
+    // --- LOGGING ---
+    function log(msg, type = 'info') {
+        const logBox = document.getElementById('log-box');
+        const line = document.createElement('div');
+        line.className = 'log-line';
+
+        const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+        let typeClass = 'log-info';
+        let prefix = '[INFO]';
+
+        if (type === 'error') { typeClass = 'log-error'; prefix = '[ERR]'; }
+        if (type === 'warn') { typeClass = 'log-warn'; prefix = '[WARN]'; }
+        if (type === 'sys') { typeClass = 'log-sys'; prefix = '[SYSTEM]'; }
+
+        line.innerHTML = `<span class="log-time">${time}</span> <span class="${typeClass}">${prefix}</span> ${msg}`;
+        logBox.insertBefore(line, logBox.firstChild);
+        if (logBox.children.length > 50) logBox.lastChild.remove();
+    }
+
+    // --- REFRESH STATUS FROM BACKEND ---
     async function refreshStatus() {
-      try {
-        const status = await callApi("/api/status");
-        const nnRunning = !!status.nn_running;
-        const tfRunning = !!status.transformer_running;
-        const activeModel = status.active_model || "unknown";
+        try {
+            const status = await callApi("/api/status");
 
-        setDot(nnDot, nnRunning ? "on" : "off");
-        nnStatusText.textContent = nnRunning ? "Running" : "Stopped";
+            const nnRunning = !!status.nn_running;
+            const tfRunning = !!status.transformer_running;
+            const activeModel = (status.active_model || "").toLowerCase();
 
-        setDot(tfDot, tfRunning ? "on" : "off");
-        tfStatusText.textContent = tfRunning ? "Running" : "Stopped";
+            // badges
+            const nnBadge = document.getElementById("badge-nn");
+            nnBadge.innerText = nnRunning ? "RUNNING" : "STOPPED";
+            nnBadge.className = "status-badge " + (nnRunning ? "status-running" : "status-stopped");
 
-        activeModelLabel.textContent =
-          activeModel === "nn"
-            ? "Neural Network"
-            : activeModel === "transformer"
-            ? "Transformer"
-            : "Unknown";
+            const tfBadge = document.getElementById("badge-tf");
+            tfBadge.innerText = tfRunning ? "RUNNING" : "STOPPED";
+            tfBadge.className = "status-badge " + (tfRunning ? "status-running" : "status-stopped");
 
-        logMessage("Status updated.");
-      } catch (err) {
-        // error already logged by callApi
-      }
+            // active model label + highlight
+            const activeLabel = document.getElementById("active-model-label");
+            const cardNN = document.getElementById("card-nn");
+            const cardTF = document.getElementById("card-tf");
+
+            cardNN.classList.remove("active-selection");
+            cardTF.classList.remove("active-selection");
+
+            if (activeModel === "nn") {
+                activeLabel.innerText = "NEURAL NETWORK";
+                activeLabel.style.color = "var(--primary)";
+                cardNN.classList.add("active-selection");
+            } else if (activeModel === "transformer") {
+                activeLabel.innerText = "TRANSFORMER";
+                activeLabel.style.color = "var(--accent)";
+                cardTF.classList.add("active-selection");
+            } else {
+                activeLabel.innerText = "None";
+                activeLabel.style.color = "var(--text-dim)";
+            }
+
+            log("Status refreshed successfully.", "sys");
+        } catch (err) {
+            log(`API Error (/api/status): ${err.message}`, "error");
+        }
     }
 
-    document.getElementById("refresh-status").addEventListener("click", refreshStatus);
+    // --- APPLY STRATEGY ---
+    async function applyStrategy() {
+        const selected = document.getElementById("model-select").value;
+        try {
+            await callApi("/api/set_active_model", {
+                method: "POST",
+                body: JSON.stringify({ model: selected })
+            });
+            log(`Active model set to ${selected.toUpperCase()}.`, "sys");
+        } catch (err) {
+            log(`Failed to set active model: ${err.message}`, "error");
+        }
+        refreshStatus();
+    }
 
-    document.getElementById("btn-start-nn").addEventListener("click", async () => {
-      try {
-        await callApi("/api/start_nn", { method: "POST" });
-        logMessage("Neural Network service started.");
-        await refreshStatus();
-      } catch (_) {}
-    });
+    // --- RUN PREDICTION TEST ---
+    async function runPredictionTest() {
+        const model = document.getElementById("test-model-select").value;
+        const resultBox = document.getElementById("test-result");
+        const btn = document.getElementById("btn-test-predict");
 
-    document.getElementById("btn-stop-nn").addEventListener("click", async () => {
-      try {
-        await callApi("/api/stop_nn", { method: "POST" });
-        logMessage("Neural Network service stopped.");
-        await refreshStatus();
-      } catch (_) {}
-    });
+        btn.disabled = true;
+        btn.innerText = "Running...";
+        resultBox.innerText = "Sending request...";
+        resultBox.style.borderLeftColor = "var(--accent)";
 
-    document.getElementById("btn-start-tf").addEventListener("click", async () => {
-      try {
-        await callApi("/api/start_transformer", { method: "POST" });
-        logMessage("Transformer service started.");
-        await refreshStatus();
-      } catch (_) {}
-    });
+        const start = performance.now();
+        try {
+            const res = await callApi("/api/test_predict", {
+                method: "POST",
+                body: JSON.stringify({ model })
+            });
+            const latency = Math.round(performance.now() - start);
+            const action = res.action ?? "Unknown";
 
-    document.getElementById("btn-stop-tf").addEventListener("click", async () => {
-      try {
-        await callApi("/api/stop_transformer", { method: "POST" });
-        logMessage("Transformer service stopped.");
-        await refreshStatus();
-      } catch (_) {}
-    });
+            resultBox.innerHTML = `Action: <b>${action}</b> | Latency: ${latency}ms`;
+            log(`Test (${model}): ${action} in ${latency}ms`, "info");
 
-    document.getElementById("btn-start-all").addEventListener("click", async () => {
-      try {
-        await callApi("/api/start_nn", { method: "POST" });
-        await callApi("/api/start_transformer", { method: "POST" });
-        logMessage("Both services started.");
-        await refreshStatus();
-      } catch (_) {}
-    });
+            // push to chart
+            state.latencyHistory.shift();
+            state.latencyHistory.push(latency);
+            chartInstance.update();
 
-    document.getElementById("btn-stop-all").addEventListener("click", async () => {
-      try {
-        await callApi("/api/stop_nn", { method: "POST" });
-        await callApi("/api/stop_transformer", { method: "POST" });
-        logMessage("Both services stopped.");
-        await refreshStatus();
-      } catch (_) {}
-    });
+        } catch (err) {
+            resultBox.innerHTML = `<span style="color:var(--danger)">FAILED</span> ${err.message}`;
+            log(`Test failed: ${err.message}`, "error");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Run Prediction";
+        }
+    }
 
-    document.getElementById("btn-apply-model").addEventListener("click", async () => {
-      const select = document.getElementById("model-select");
-      const model = select.value === "transformer" ? "transformer" : "nn";
-      try {
-        await callApi("/api/set_active_model", {
-          method: "POST",
-          body: JSON.stringify({ model })
+    // --- SAVE CONFIGURATION ---
+    function saveConfiguration() {
+        const apiUrl = document.getElementById("setting-api-url").value;
+        localStorage.setItem("BACKEND_URL", apiUrl);
+        log("Configuration saved. Reload page to apply new backend URL.", "sys");
+    }
+
+    // --- INIT ---
+    window.onload = () => {
+        initChart();
+
+        // Service control buttons
+        document.getElementById("btn-start-nn").addEventListener("click", async () => {
+            try {
+                await callApi("/api/start_nn", { method: "POST" });
+                log("NN start requested.", "sys");
+            } catch (e) {
+                log(e.message, "error");
+            }
+            setTimeout(refreshStatus, 800);
         });
-        logMessage(`Active model set to: ${model === "nn" ? "Neural Network" : "Transformer"}`);
-        await refreshStatus();
-      } catch (_) {}
-    });
 
-    document.getElementById("btn-test-predict").addEventListener("click", async () => {
-      const model = document.getElementById("test-model-select").value;
-      testResultBox.textContent = "Running test prediction...";
-      try {
-        const res = await callApi("/api/test_predict", {
-          method: "POST",
-          body: JSON.stringify({ model })
+        document.getElementById("btn-stop-nn").addEventListener("click", async () => {
+            try {
+                await callApi("/api/stop_nn", { method: "POST" });
+                log("NN stop requested.", "sys");
+            } catch (e) {
+                log(e.message, "error");
+            }
+            setTimeout(refreshStatus, 800);
         });
-        const action = res.action ?? "(no action field in response)";
-        testResultBox.textContent = `Model: ${
-          model === "nn" ? "Neural Network" : "Transformer"
-        }\nPredicted action: ${action}`;
-        logMessage("Test prediction completed.");
-      } catch (err) {
-        testResultBox.textContent =
-          "Error while running test prediction. Check that the services are running.";
-      }
-    });
 
-    // Initial status on page load
-    refreshStatus();
-  </script>
+        document.getElementById("btn-start-tf").addEventListener("click", async () => {
+            try {
+                await callApi("/api/start_transformer", { method: "POST" });
+                log("Transformer start requested.", "sys");
+            } catch (e) {
+                log(e.message, "error");
+            }
+            setTimeout(refreshStatus, 800);
+        });
+
+        document.getElementById("btn-stop-tf").addEventListener("click", async () => {
+            try {
+                await callApi("/api/stop_transformer", { method: "POST" });
+                log("Transformer stop requested.", "sys");
+            } catch (e) {
+                log(e.message, "error");
+            }
+            setTimeout(refreshStatus, 800);
+        });
+
+        document.getElementById("btn-start-all").addEventListener("click", async () => {
+            log("Starting all services…", "sys");
+            try { await callApi("/api/start_nn", { method: "POST" }); } catch(e){ log(e.message,"error"); }
+            try { await callApi("/api/start_transformer", { method: "POST" }); } catch(e){ log(e.message,"error"); }
+            setTimeout(refreshStatus, 1000);
+        });
+
+        document.getElementById("btn-stop-all").addEventListener("click", async () => {
+            log("Stopping all services…", "warn");
+            try { await callApi("/api/stop_nn", { method: "POST" }); } catch(e){ log(e.message,"error"); }
+            try { await callApi("/api/stop_transformer", { method: "POST" }); } catch(e){ log(e.message,"error"); }
+            setTimeout(refreshStatus, 1000);
+        });
+
+        // Refresh button
+        document.getElementById("refresh-status").addEventListener("click", () => {
+            log("Status refresh requested...", "sys");
+            refreshStatus();
+        });
+
+        // Apply model strategy
+        document.getElementById("btn-apply-model").addEventListener("click", applyStrategy);
+
+        // Test prediction
+        document.getElementById("btn-test-predict").addEventListener("click", runPredictionTest);
+
+        log("Dashboard ready. Fetching initial status...", "sys");
+
+        // Initial status fetch
+        refreshStatus();
+    };
+
+</script>
 </body>
 </html>
