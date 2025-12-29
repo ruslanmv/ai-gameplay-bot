@@ -95,3 +95,6 @@ frontend/index.old.html
 * copy*.*
 * copy *
 copy *
+patch_add_stream_features.sh
+patch_enterprise_backend.sh
+/.patch_backup

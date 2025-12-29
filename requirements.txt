@@ -53,3 +53,6 @@ jupyter==1.0.0
 ipython==8.14.0
 matplotlib==3.7.2
 seaborn==0.12.2
+
+# Stream URL resolution (YouTube/Twitch)
+yt-dlp
