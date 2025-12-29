@@ -137,7 +137,7 @@ cd frontend && python -m http.server 3000
 **That's it!** 🎉 Your AI Gameplay Bot is now running at `http://localhost:8000`
 
 ---
-
+![](assets/2025-12-29-19-50-13.png)
 
 ## 📚 Documentation
 

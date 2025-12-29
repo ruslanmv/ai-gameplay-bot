@@ -1,22 +1,47 @@
-import torch
-import numpy as np
-from flask import Flask, request, jsonify
-from nn_model import GameplayNN
+import logging
+from pathlib import Path
+import sys
 
-# Initialize the Flask app
+import torch
+from flask import Flask, request, jsonify
+
+# -----------------------------------------------------------------------------
+# Logging
+# -----------------------------------------------------------------------------
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger("deploy-nn")
+
+# -----------------------------------------------------------------------------
+# Fix imports (ensure repo root and models dir are importable)
+# -----------------------------------------------------------------------------
+ROOT_DIR = Path(__file__).resolve().parents[1]
+NN_DIR = ROOT_DIR / "models" / "neural_network"
+sys.path.insert(0, str(ROOT_DIR))
+sys.path.insert(0, str(NN_DIR))
+
+from models.neural_network.nn_model import GameplayNN
+
+# -----------------------------------------------------------------------------
+# Flask app
+# -----------------------------------------------------------------------------
 app = Flask(__name__)
 
-# Load the pre-trained Neural Network model
-MODEL_PATH = "models/neural_network/nn_model_finetuned.pth"
+MODEL_PATH = ROOT_DIR / "models" / "neural_network" / "nn_model_finetuned.pth"
 INPUT_SIZE = 128
 HIDDEN_SIZE = 64
 OUTPUT_SIZE = 10
 
 model = GameplayNN(INPUT_SIZE, HIDDEN_SIZE, OUTPUT_SIZE)
-model.load_state_dict(torch.load(MODEL_PATH))
+
+if MODEL_PATH.exists():
+    logger.info("Loading NN weights from %s", MODEL_PATH)
+    state = torch.load(str(MODEL_PATH), map_location="cpu")
+    model.load_state_dict(state)
+else:
+    logger.warning("Model weights not found at %s. Running with RANDOM weights.", MODEL_PATH)
+
 model.eval()
 
-# Action mapping (example, update as needed)
 ACTION_MAPPING = {
     0: "move_forward",
     1: "move_backward",
@@ -27,35 +52,21 @@ ACTION_MAPPING = {
     6: "interact",
     7: "use_item",
     8: "open_inventory",
-    9: "cast_spell"
+    9: "cast_spell",
 }
 
+
 def predict_action(state):
-    """
-    Predict the action based on the input state using the pre-trained model.
-    Args:
-        state (list): Input state features.
-    Returns:
-        str: Predicted action.
-    """
     state_tensor = torch.tensor(state, dtype=torch.float32).unsqueeze(0)
     with torch.no_grad():
         probabilities = model(state_tensor)
         action_index = torch.argmax(probabilities).item()
     return ACTION_MAPPING.get(action_index, "unknown_action")
 
+
 @app.route("/predict", methods=["POST"])
 def predict():
-    """
-    API endpoint to predict the action from a given state.
-    Input JSON format:
-        {
-            "state": [feature1, feature2, ..., feature128]
-        }
-    Returns:
-        JSON response with the predicted action.
-    """
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     if "state" not in data:
         return jsonify({"error": "Missing 'state' in request"}), 400
 
@@ -67,14 +78,15 @@ def predict():
         action = predict_action(state)
         return jsonify({"action": action}), 200
     except Exception as e:
+        logger.exception("Prediction error: %s", e)
         return jsonify({"error": str(e)}), 500
 
 
 @app.route("/health", methods=["GET"])
 def health():
-    """Health check endpoint."""
     return jsonify({"status": "healthy", "service": "neural_network"}), 200
 
+
 if __name__ == "__main__":
-    # Run the Flask server
+    logger.info("Starting NN service on port 5000...")
     app.run(host="0.0.0.0", port=5000)
