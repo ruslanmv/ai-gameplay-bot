@@ -91,3 +91,7 @@ Desktop.ini
 *~.nib
 .gunicorn.pid
 .setup_done
+frontend/index.old.html
+* copy*.*
+* copy *
+copy *

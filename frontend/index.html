@@ -1,942 +1,1115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Gameplay | Enterprise Dashboard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            /* Derived from your usage */
-            --bg-dark: #0f172a; /* Slate 900 */
-            --bg-panel: rgba(30, 41, 59, 0.5);
-            --border: rgba(255, 255, 255, 0.1);
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-            --primary: #3b82f6; /* Blue 500 */
-            --accent: #8b5cf6; /* Violet 500 */
-            --success: #10b981;
-            --danger: #ef4444;
-            --glass: blur(12px);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>AI Gameplay | Enterprise Dashboard</title>
 
-        * {
-            box-sizing: border-box;
-            outline: none;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-        body {
-            margin: 0;
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at top right, #1e1b4b, transparent 40%),
-                              radial-gradient(circle at bottom left, #0f172a, transparent 40%);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-        }
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        /* --- SIDEBAR --- */
-        .sidebar {
-            width: 260px;
-            background: rgba(15, 23, 42, 0.95);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 24px;
-            z-index: 10;
-        }
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --bg-panel: rgba(30, 41, 59, 0.5);
+      --border: rgba(255, 255, 255, 0.1);
+      --text-main: #f8fafc;
+      --text-dim: #94a3b8;
+      --primary: #3b82f6;
+      --accent: #8b5cf6;
+      --success: #10b981;
+      --danger: #ef4444;
+      --glass: blur(12px);
+    }
 
-        .brand {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 40px;
-            letter-spacing: -0.5px;
-        }
+    * { box-sizing: border-box; outline: none; }
 
-        .brand-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
+    body {
+      margin: 0;
+      background-color: var(--bg-dark);
+      background-image:
+        radial-gradient(circle at top right, #1e1b4b, transparent 40%),
+        radial-gradient(circle at bottom left, #0f172a, transparent 40%);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+    }
 
-        .nav-item {
-            padding: 12px 16px;
-            color: var(--text-dim);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 4px;
-        }
+    /* --- SIDEBAR --- */
+    .sidebar {
+      width: 260px;
+      background: rgba(15, 23, 42, 0.95);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      z-index: 10;
+    }
 
-        .nav-item:hover, .nav-item.active {
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--primary);
-        }
+    .brand {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 40px;
+      letter-spacing: -0.5px;
+    }
 
-        .nav-icon { width: 20px; text-align: center; }
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
 
-        .sidebar-footer {
-            margin-top: auto;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
-            font-size: 12px;
-            color: var(--text-dim);
-        }
+    .nav-item {
+      padding: 12px 16px;
+      color: var(--text-dim);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+      user-select: none;
+    }
 
-        .github-link {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #24292e;
-            color: white;
-            padding: 10px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 12px;
-            transition: transform 0.2s;
-            justify-content: center;
-        }
-        .github-link:hover { transform: translateY(-2px); background: #2f363d; }
+    .nav-item:hover, .nav-item.active {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--primary);
+    }
 
-        /* --- MAIN CONTENT CONTAINER --- */
-        .main-content {
-            flex: 1;
-            padding: 32px;
-            /* Flex column to hold views, views handle their own grid/layout */
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+    .nav-icon { width: 20px; text-align: center; }
 
-        /* --- VIEW MANAGEMENT --- */
-        .view-section {
-            display: none; /* Hidden by default */
-            height: 100%;
-            width: 100%;
-            overflow-y: auto;
-            padding-right: 4px; /* Space for scrollbar */
-        }
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-dim);
+    }
 
-        .view-section.active {
-            display: grid; /* Default grid for dashboard, overriden for others if needed */
-        }
+    .github-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #24292e;
+      color: white;
+      padding: 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 12px;
+      transition: transform 0.2s;
+      justify-content: center;
+    }
+    .github-link:hover { transform: translateY(-2px); background: #2f363d; }
 
-        /* --- DASHBOARD GRID --- */
-        #view-dashboard {
-            grid-template-columns: 2fr 1fr;
-            grid-template-rows: auto auto 1fr;
-            gap: 24px;
-        }
+    /* --- MAIN CONTENT --- */
+    .main-content {
+      flex: 1;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
 
-        /* --- COMMON HEADERS --- */
-        .header-section {
-            grid-column: 1 / -1;
-            grid-row: 1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            min-height: 60px;
-        }
+    /* --- VIEW MANAGEMENT --- */
+    .view-section {
+      display: none;
+      height: 100%;
+      width: 100%;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
 
-        h1 { font-size: 24px; margin: 0; font-weight: 600; }
-        .subtitle { color: var(--text-dim); font-size: 14px; margin-top: 4px; }
+    .view-section.active { display: grid; }
 
-        .api-status {
-            font-size: 12px;
-            padding: 6px 12px;
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+    /* --- DASHBOARD GRID --- */
+    #view-dashboard {
+      grid-template-columns: 2fr 1fr;
+      grid-template-rows: auto auto 1fr;
+      gap: 24px;
+    }
 
-        .api-dot { width: 6px; height: 6px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite; }
+    /* --- COMMON HEADERS --- */
+    .header-section {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      min-height: 60px;
+    }
 
-        /* --- CARDS --- */
-        .card {
-            background: var(--bg-panel);
-            backdrop-filter: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-        }
+    h1 { font-size: 24px; margin: 0; font-weight: 600; }
+    .subtitle { color: var(--text-dim); font-size: 14px; margin-top: 4px; }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-        }
+    .api-status {
+      font-size: 12px;
+      padding: 6px 12px;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 260px;
+      justify-content: space-between;
+    }
 
-        .card-title { font-size: 16px; font-weight: 600; color: var(--text-main); }
-        .card-desc { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+    .api-dot {
+      width: 6px; height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
 
-        /* --- DASHBOARD SPECIFIC --- */
-        .models-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
+    .api-dot.offline {
+      background: var(--danger);
+      animation: none;
+    }
 
-        .model-card {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            position: relative;
-            overflow: hidden;
-            transition: border-color 0.3s;
-        }
+    /* --- CARDS --- */
+    .card {
+      background: var(--bg-panel);
+      backdrop-filter: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
 
-        .model-card.active-selection {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
-        }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      gap: 12px;
+    }
 
-        .status-badge {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            font-size: 10px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
+    .card-title { font-size: 16px; font-weight: 600; color: var(--text-main); }
+    .card-desc { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
 
-        .status-running { background: rgba(16, 185, 129, 0.2); color: var(--success); }
-        .status-stopped { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+    /* --- DASHBOARD SPECIFIC --- */
+    .models-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
 
-        .btn-group { display: flex; gap: 8px; margin-top: 16px; }
+    .model-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
 
-        .btn {
-            flex: 1;
-            padding: 8px;
-            border-radius: 6px;
-            border: none;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+    .model-card.active-selection {
+      border-color: var(--primary);
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+    }
 
-        .btn-start { background: var(--primary); color: white; }
-        .btn-start:hover { background: #2563eb; }
-        .btn-stop { background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid var(--border); }
-        .btn-stop:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: var(--danger); }
+    .status-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
 
-        .status-panel { grid-column: 1; grid-row: 2; }
-        .controls-panel { grid-column: 2; grid-row: 2 / 4; }
-        .terminal-container { grid-column: 1; grid-row: 3; min-height: 400px; height: 100%; }
+    .status-running { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+    .status-stopped { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+    .status-loading { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
 
-        /* --- MODELS VIEW TABLE --- */
-        #view-models {
-            display: none; /* Overridden by .active */
-            grid-template-columns: 1fr;
-            grid-template-rows: auto 1fr;
-            gap: 24px;
-        }
-        #view-models.active { display: grid; }
+    .btn-group { display: flex; gap: 8px; margin-top: 16px; }
 
-        .table-container {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
+    .btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
 
-        .table-container th {
-            text-align: left;
-            padding: 12px 16px;
-            color: var(--text-dim);
-            border-bottom: 1px solid var(--border);
-            font-weight: 500;
-        }
+    .btn[disabled] { opacity: 0.6; cursor: not-allowed; }
 
-        .table-container td {
-            padding: 16px;
-            border-bottom: 1px solid var(--border);
-            color: var(--text-main);
-        }
+    .btn-start { background: var(--primary); color: white; }
+    .btn-start:hover { background: #2563eb; }
+    .btn-stop { background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid var(--border); }
+    .btn-stop:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: var(--danger); }
 
-        .table-row:hover { background: rgba(255,255,255,0.02); }
+    .status-panel { grid-column: 1; grid-row: 2; }
+    .controls-panel { grid-column: 2; grid-row: 2 / 4; }
+    .terminal-container { grid-column: 1; grid-row: 3; min-height: 400px; height: 100%; }
 
-        .chip {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 600;
-            background: var(--bg-dark);
-            border: 1px solid var(--border);
-        }
+    /* --- MODELS VIEW --- */
+    #view-models {
+      display: none;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto 1fr;
+      gap: 24px;
+      align-content: start;
+    }
+    #view-models.active { display: grid; }
 
-        /* --- SETTINGS VIEW --- */
-        #view-settings {
-            display: none;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            align-content: start;
-        }
-        #view-settings.active { display: grid; }
+    .table-container {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .table-container th {
+      text-align: left;
+      padding: 12px 16px;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+      font-weight: 500;
+    }
+    .table-container td {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+    .table-row:hover { background: rgba(255,255,255,0.02); }
 
-        .setting-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        .setting-info { flex: 1; padding-right: 16px; }
-        .setting-label { font-weight: 500; display: block; margin-bottom: 4px; }
-        .setting-desc { font-size: 12px; color: var(--text-dim); }
+    .chip {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
 
-        input[type="text"], input[type="number"] {
-            background: var(--bg-dark);
-            border: 1px solid var(--border);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            width: 150px;
-        }
+    .file-pill {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.55);
+      color: var(--text-dim);
+    }
 
-        input[type="checkbox"] {
-            width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary);
-        }
+    /* --- SETTINGS VIEW --- */
+    #view-settings {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-content: start;
+    }
+    #view-settings.active { display: grid; }
 
-        /* --- CONTROLS INTERNAL --- */
-        .control-group { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
-        .select-wrapper { position: relative; margin-top: 10px; }
-        select {
-            width: 100%;
-            background: rgba(15, 23, 42, 0.8);
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            appearance: none;
-            cursor: pointer;
-        }
-        .btn-action {
-            width: 100%; padding: 12px; margin-top: 12px;
-            background: linear-gradient(135deg, var(--accent), var(--primary));
-            border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;
-        }
-        .btn-action:active { transform: scale(0.98); }
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+    .setting-info { flex: 1; padding-right: 16px; }
+    .setting-label { font-weight: 500; display: block; margin-bottom: 4px; }
+    .setting-desc { font-size: 12px; color: var(--text-dim); }
 
-        /* --- TERMINAL --- */
-        .terminal {
-            background: #000; border-radius: 8px; flex: 1; padding: 12px;
-            font-family: 'JetBrains Mono', monospace; font-size: 12px;
-            overflow-y: auto; border: 1px solid #333; height: 100%;
-        }
-        .log-line { margin-bottom: 4px; display: block; }
-        .log-time { color: #555; margin-right: 8px; }
-        .log-info { color: #10b981; }
-        .log-error { color: #ef4444; }
-        .log-warn { color: #f59e0b; }
-        .log-sys { color: #10b981; }
+    input[type="text"], input[type="number"] {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      width: 220px;
+    }
 
-        /* --- CHART --- */
-        .chart-container { height: 150px; margin-top: 20px; position: relative; }
-        .test-result-box {
-            background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px; margin-top: 12px;
-            font-family: 'JetBrains Mono', monospace; font-size: 12px; min-height: 40px;
-            border-left: 3px solid var(--accent); transition: all 0.3s;
-        }
+    input[type="checkbox"] {
+      width: 16px; height: 16px;
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
+    /* --- CONTROLS --- */
+    .control-group { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+    .select-wrapper { position: relative; margin-top: 10px; }
+    select {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.8);
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      appearance: none;
+      cursor: pointer;
+    }
+    .btn-action {
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-action:active { transform: scale(0.98); }
 
-        /* Responsive Fix */
-        @media (max-width: 900px) {
-            .main-content { display: flex; flex-direction: column; }
-            #view-dashboard, #view-models, #view-settings { display: flex; flex-direction: column; }
-            .sidebar { width: 70px; padding: 16px 12px; }
-            .brand { font-size: 0; }
-            .brand-icon { margin-left: 5px; }
-            .nav-item { justify-content: center; padding: 12px; }
-            .nav-icon { margin: 0; }
-            .sidebar-footer { display: none; }
-            .controls-panel { order: -1; }
-            .terminal-container { min-height: 250px; }
-        }
-    </style>
+    /* --- TERMINAL --- */
+    .terminal {
+      background: #000;
+      border-radius: 8px;
+      flex: 1;
+      padding: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      overflow-y: auto;
+      border: 1px solid #333;
+      height: 100%;
+    }
+    .log-line { margin-bottom: 4px; display: block; }
+    .log-time { color: #555; margin-right: 8px; }
+    .log-info { color: #10b981; }
+    .log-error { color: #ef4444; }
+    .log-warn { color: #f59e0b; }
+    .log-sys { color: #10b981; }
+
+    /* --- CHART --- */
+    .chart-container { height: 150px; margin-top: 20px; position: relative; }
+    .test-result-box {
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      min-height: 40px;
+      border-left: 3px solid var(--accent);
+      transition: all 0.3s;
+    }
+
+    .hint {
+      margin-top: 10px;
+      color: var(--text-dim);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+      70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    @media (max-width: 900px) {
+      .main-content { display: flex; flex-direction: column; }
+      #view-dashboard, #view-models, #view-settings { display: flex; flex-direction: column; }
+      .sidebar { width: 70px; padding: 16px 12px; }
+      .brand { font-size: 0; }
+      .brand-icon { margin-left: 5px; }
+      .nav-item { justify-content: center; padding: 12px; }
+      .nav-icon { margin: 0; }
+      .sidebar-footer { display: none; }
+      .controls-panel { order: -1; }
+      .terminal-container { min-height: 250px; }
+      input[type="text"], input[type="number"] { width: 100%; }
+      .api-status { min-width: auto; }
+    }
+  </style>
 </head>
-<body>
 
-<!-- SIDEBAR -->
-<nav class="sidebar">
+<body>
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
     <div class="brand">
-        <div class="brand-icon">⚡</div>
-        AI Gameplay
+      <div class="brand-icon">⚡</div>
+      AI Gameplay
     </div>
 
     <div id="nav-dashboard" class="nav-item active" onclick="switchView('dashboard')">
-        <span class="nav-icon">📊</span> Dashboard
+      <span class="nav-icon">📊</span> Dashboard
     </div>
     <div id="nav-models" class="nav-item" onclick="switchView('models')">
-        <span class="nav-icon">🧠</span> Models
+      <span class="nav-icon">🧠</span> Models
     </div>
     <div id="nav-settings" class="nav-item" onclick="switchView('settings')">
-        <span class="nav-icon">⚙️</span> Settings
+      <span class="nav-icon">⚙️</span> Settings
     </div>
 
     <div class="sidebar-footer">
-        <div>v0.1.4 Enterprise</div>
-        <a href="https://github.com/ruslanmv/ai-gameplay-bot" target="_blank" class="github-link">
-            <span>⭐</span> Star on GitHub
-        </a>
+      <div id="ui-version">v0.1.5</div>
+      <a href="https://github.com/ruslanmv/ai-gameplay-bot" target="_blank" class="github-link">
+        <span>⭐</span> Star on GitHub
+      </a>
     </div>
-</nav>
+  </nav>
 
-<!-- MAIN CONTENT WRAPPER -->
-<main class="main-content">
+  <!-- MAIN CONTENT WRAPPER -->
+  <main class="main-content">
 
     <!-- VIEW 1: DASHBOARD -->
     <div id="view-dashboard" class="view-section active">
-        <!-- HEADER -->
-        <div class="header-section">
-            <div>
-                <h1>Command Center</h1>
-                <div class="subtitle">Real-time orchestration and monitoring</div>
-            </div>
-            <div class="api-status">
-                <div class="api-dot"></div>
-                Backend Connected: <span id="backend-url-label" style="margin-left: 4px; font-family: 'JetBrains Mono';"></span>
-            </div>
+      <!-- HEADER -->
+      <div class="header-section">
+        <div>
+          <h1>Command Center</h1>
+          <div class="subtitle">Real-time orchestration and monitoring</div>
+        </div>
+        <div class="api-status" title="Backend health">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div id="backend-dot" class="api-dot"></div>
+            <span id="backend-state">Backend: OK</span>
+          </div>
+          <span id="backend-url-label" style="font-family:'JetBrains Mono';"></span>
+        </div>
+      </div>
+
+      <!-- LEFT COLUMN: SYSTEM STATUS -->
+      <div class="card status-panel">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Service Status</div>
+            <div class="card-desc">Manage inference engines</div>
+          </div>
+          <button id="refresh-status" class="btn-stop" style="width:auto;padding:6px 12px;">↻ Refresh</button>
         </div>
 
-        <!-- LEFT COLUMN: SYSTEM STATUS -->
-        <div class="card status-panel">
-            <div class="card-header">
-                <div>
-                    <div class="card-title">Service Status</div>
-                    <div class="card-desc">Manage inference engines</div>
-                </div>
-                <button id="refresh-status" class="btn-stop" style="width: auto; padding: 6px 12px;">↻ Refresh</button>
+        <div class="models-grid">
+          <!-- Neural Network Card -->
+          <div class="model-card" id="card-nn">
+            <div class="status-badge status-stopped" id="badge-nn">STOPPED</div>
+            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Neural Network</div>
+            <div style="font-size:11px;color:var(--text-dim);">Port 5000 • Low Latency</div>
+            <div class="btn-group">
+              <button class="btn btn-start" id="btn-start-nn">Start</button>
+              <button class="btn btn-stop" id="btn-stop-nn">Stop</button>
             </div>
+          </div>
 
-            <div class="models-grid">
-                <!-- Neural Network Card -->
-                <div class="model-card" id="card-nn">
-                    <div class="status-badge status-stopped" id="badge-nn">STOPPED</div>
-                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">Neural Network</div>
-                    <div style="font-size: 11px; color: var(--text-dim);">Port 5000 • Low Latency</div>
-                    <div class="btn-group">
-                        <button class="btn btn-start" id="btn-start-nn">Start</button>
-                        <button class="btn btn-stop" id="btn-stop-nn">Stop</button>
-                    </div>
-                </div>
-
-                <!-- Transformer Card -->
-                <div class="model-card" id="card-tf">
-                    <div class="status-badge status-stopped" id="badge-tf">STOPPED</div>
-                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">Transformer</div>
-                    <div style="font-size: 11px; color: var(--text-dim);">Port 5001 • Context Aware</div>
-                    <div class="btn-group">
-                        <button class="btn btn-start" id="btn-start-tf">Start</button>
-                        <button class="btn btn-stop" id="btn-stop-tf">Stop</button>
-                    </div>
-                </div>
+          <!-- Transformer Card -->
+          <div class="model-card" id="card-tf">
+            <div class="status-badge status-stopped" id="badge-tf">STOPPED</div>
+            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Transformer</div>
+            <div style="font-size:11px;color:var(--text-dim);">Port 5001 • Context Aware</div>
+            <div class="btn-group">
+              <button class="btn btn-start" id="btn-start-tf">Start</button>
+              <button class="btn btn-stop" id="btn-stop-tf">Stop</button>
             </div>
-
-            <div style="display: flex; gap: 12px;">
-                <button class="btn btn-action" id="btn-start-all" style="background: var(--bg-dark); border: 1px solid var(--border);">Start All Services</button>
-                <button class="btn btn-action" id="btn-stop-all" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger);">Stop All</button>
-            </div>
+          </div>
         </div>
 
-        <!-- RIGHT COLUMN: CONTROLS & TEST -->
-        <div class="card controls-panel">
-            <div class="control-group">
-                <div class="card-title">Active Model Strategy</div>
-                <div class="card-desc">Select which model controls the game input.</div>
-
-                <div class="select-wrapper">
-                    <select id="model-select">
-                        <option value="nn">Neural Network (Speed)</option>
-                        <option value="transformer">Transformer (Accuracy)</option>
-                    </select>
-                </div>
-                <button class="btn-action" id="btn-apply-model">Apply Strategy</button>
-
-                <div style="margin-top: 12px; font-size: 12px; color: var(--text-dim);">
-                    Currently Active: <span id="active-model-label" style="color: var(--text-dim); font-weight: 700;">None</span>
-                </div>
-            </div>
-
-            <div>
-                <div class="card-title">Live Inference Test</div>
-                <div class="card-desc">Send dummy state to verify latency.</div>
-
-                <div class="select-wrapper">
-                    <select id="test-model-select">
-                        <option value="nn">Test Neural Network</option>
-                        <option value="transformer">Test Transformer</option>
-                    </select>
-                </div>
-                <button class="btn-action" id="btn-test-predict" style="background: var(--primary);">Run Prediction</button>
-
-                <div id="test-result" class="test-result-box">
-                    Ready to test...
-                </div>
-
-                <!-- Visual Chart for Latency -->
-                <div class="chart-container">
-                    <canvas id="latencyChart"></canvas>
-                </div>
-            </div>
+        <div style="display:flex;gap:12px;">
+          <button class="btn btn-action" id="btn-start-all" style="background:var(--bg-dark);border:1px solid var(--border);">Start All Services</button>
+          <button class="btn btn-action" id="btn-stop-all" style="background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid var(--danger);">Stop All</button>
         </div>
 
-        <!-- TERMINAL LOGS -->
-        <div class="card terminal-container">
-            <div class="card-title" style="margin-bottom: 12px;">System Event Log</div>
-            <div id="log-box" class="terminal">
-                <span class="log-line"><span class="log-time">00:00:00</span> <span class="log-sys">[SYSTEM]</span> Dashboard initialized...</span>
-            </div>
+        <div class="hint">
+          Tip: If you started the backend with <code style="font-family:'JetBrains Mono';">make production</code>,
+          open this UI at <b>http://localhost:8000/</b>. This page talks to the same backend that serves it (no mock).
         </div>
+      </div>
+
+      <!-- RIGHT COLUMN: CONTROLS & TEST -->
+      <div class="card controls-panel">
+        <div class="control-group">
+          <div class="card-title">Active Model Strategy</div>
+          <div class="card-desc">Select which model controls the game input.</div>
+
+          <div class="select-wrapper">
+            <select id="model-select">
+              <option value="nn">Neural Network (Speed)</option>
+              <option value="transformer">Transformer (Accuracy)</option>
+            </select>
+          </div>
+          <button class="btn-action" id="btn-apply-model">Apply Strategy</button>
+
+          <div style="margin-top:12px;font-size:12px;color:var(--text-dim);">
+            Currently Active:
+            <span id="active-model-label" style="color:var(--text-dim);font-weight:700;">None</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="card-title">Live Inference Test</div>
+          <div class="card-desc">Calls the real backend endpoint <code style="font-family:'JetBrains Mono';">/api/test_predict</code>.</div>
+
+          <div class="select-wrapper">
+            <select id="test-model-select">
+              <option value="nn">Test Neural Network</option>
+              <option value="transformer">Test Transformer</option>
+            </select>
+          </div>
+          <button class="btn-action" id="btn-test-predict" style="background:var(--primary);">Run Prediction</button>
+
+          <div id="test-result" class="test-result-box">Ready to test...</div>
+
+          <div class="chart-container">
+            <canvas id="latencyChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- TERMINAL LOGS -->
+      <div class="card terminal-container">
+        <div class="card-title" style="margin-bottom:12px;">System Event Log</div>
+        <div id="log-box" class="terminal">
+          <span class="log-line"><span class="log-time">00:00:00</span> <span class="log-sys">[SYSTEM]</span> Dashboard initialized...</span>
+        </div>
+      </div>
     </div>
 
     <!-- VIEW 2: MODELS -->
     <div id="view-models" class="view-section">
-        <div class="header-section">
-            <div>
-                <h1>Model Repository</h1>
-                <div class="subtitle">Manage and deploy available AI architectures</div>
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <button class="btn btn-start" style="padding: 10px 20px;">+ Import Model</button>
-            </div>
+      <div class="header-section">
+        <div>
+          <h1>Model Repository</h1>
+          <div class="subtitle">Load and manage real model weights on the backend</div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-start" id="btn-refresh-models" style="padding:10px 20px;flex:0 0 auto;">↻ Refresh</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 24px;">
+        <div class="card-title">Backend Model Files</div>
+        <div class="card-desc">These are read from the backend (no mock table). If your backend doesn’t expose this endpoint yet, the UI will show an error.</div>
+        <div style="margin-top: 16px;display:flex;gap:12px;flex-wrap:wrap;">
+          <span id="pill-nn" class="file-pill">NN: <span style="color:var(--text-main);">unknown</span></span>
+          <span id="pill-tf" class="file-pill">Transformer: <span style="color:var(--text-main);">unknown</span></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Installed Services</div>
+        <div class="card-desc">Click “Load” to set the active model; click “Logs” to fetch backend logs for that service.</div>
+
+        <div style="margin-top:16px;overflow-x:auto;">
+          <table class="table-container">
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Status</th>
+                <th>Active</th>
+                <th>Port</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="table-row">
+                <td style="font-weight:600;color:var(--primary);">Neural Network</td>
+                <td><span class="chip" id="tbl-nn-status">unknown</span></td>
+                <td><span class="chip" id="tbl-nn-active">unknown</span></td>
+                <td>5000</td>
+                <td style="display:flex;gap:10px;flex-wrap:wrap;">
+                  <button class="btn-stop" id="tbl-nn-load" style="padding:6px 10px;">Load</button>
+                  <button class="btn-stop" id="tbl-nn-logs" style="padding:6px 10px;">Logs</button>
+                </td>
+              </tr>
+              <tr class="table-row">
+                <td style="font-weight:600;color:var(--accent);">Transformer</td>
+                <td><span class="chip" id="tbl-tf-status">unknown</span></td>
+                <td><span class="chip" id="tbl-tf-active">unknown</span></td>
+                <td>5001</td>
+                <td style="display:flex;gap:10px;flex-wrap:wrap;">
+                  <button class="btn-stop" id="tbl-tf-load" style="padding:6px 10px;">Load</button>
+                  <button class="btn-stop" id="tbl-tf-logs" style="padding:6px 10px;">Logs</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <div class="card">
-            <div class="card-title">Installed Models</div>
-            <div style="margin-top: 16px; overflow-x: auto;">
-                <table class="table-container">
-                    <thead>
-                        <tr>
-                            <th>Model Name</th>
-                            <th>Architecture</th>
-                            <th>Framework</th>
-                            <th>Accuracy (Val)</th>
-                            <th>Size</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="table-row">
-                            <td style="font-weight: 600; color: var(--primary);">gameplay_v3_fast.h5</td>
-                            <td><span class="chip">CNN-LSTM</span></td>
-                            <td>TensorFlow</td>
-                            <td>94.2%</td>
-                            <td>45 MB</td>
-                            <td><button class="btn-stop" style="padding: 4px 8px;">Load</button></td>
-                        </tr>
-                        <tr class="table-row">
-                            <td style="font-weight: 600; color: var(--accent);">transformer_xl_ctx.pt</td>
-                            <td><span class="chip">Transformer</span></td>
-                            <td>PyTorch</td>
-                            <td>98.1%</td>
-                            <td>120 MB</td>
-                            <td><button class="btn-stop" style="padding: 4px 8px;">Load</button></td>
-                        </tr>
-                        <tr class="table-row">
-                            <td style="font-weight: 600; color: white;">legacy_net_v1.h5</td>
-                            <td><span class="chip">Dense</span></td>
-                            <td>Keras</td>
-                            <td>76.5%</td>
-                            <td>12 MB</td>
-                            <td><button class="btn-stop" style="color: var(--danger); padding: 4px 8px;">Delete</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="hint">
+          This view expects backend endpoints:
+          <code style="font-family:'JetBrains Mono';">GET /api/status</code>,
+          <code style="font-family:'JetBrains Mono';">POST /api/set_active_model</code>,
+          <code style="font-family:'JetBrains Mono';">GET /api/service_log/&lt;name&gt;</code>.
+          For model file names, it tries <code style="font-family:'JetBrains Mono';">GET /api/model_files</code> (optional).
         </div>
+      </div>
     </div>
 
     <!-- VIEW 3: SETTINGS -->
     <div id="view-settings" class="view-section">
-        <div class="header-section">
-            <div>
-                <h1>System Configuration</h1>
-                <div class="subtitle">Adjust parameters for the simulation environment</div>
-            </div>
+      <div class="header-section">
+        <div>
+          <h1>System Configuration</h1>
+          <div class="subtitle">Backend connection and UI settings</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Connectivity</div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">API Endpoint</span>
+            <span class="setting-desc">Used only if you open this file directly. When served by backend, the UI uses same-origin automatically.</span>
+          </div>
+          <input type="text" id="setting-api-url" value="http://localhost:8000">
         </div>
 
-        <div class="card">
-            <div class="card-title">General Settings</div>
-
-            <div class="setting-item">
-                <div class="setting-info">
-                    <span class="setting-label">API Endpoint</span>
-                    <span class="setting-desc">The base URL for the backend Python server.</span>
-                </div>
-                <input type="text" id="setting-api-url" value="http://localhost:8000">
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-info">
-                    <span class="setting-label">Auto-Connect</span>
-                    <span class="setting-desc">Automatically attempt connection on page load.</span>
-                </div>
-                <input type="checkbox" checked>
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-info">
-                    <span class="setting-label">Safe Mode</span>
-                    <span class="setting-desc">Prevent actions that could crash the game process.</span>
-                </div>
-                <input type="checkbox" checked>
-            </div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">Auto-Refresh</span>
+            <span class="setting-desc">Refresh status every 3 seconds.</span>
+          </div>
+          <input type="checkbox" id="setting-autorefresh" checked>
         </div>
 
-        <div class="card">
-            <div class="card-title">Simulation Parameters</div>
-
-            <div class="setting-item">
-                <div class="setting-info">
-                    <span class="setting-label">Base Latency (ms)</span>
-                    <span class="setting-desc">Artificial delay added to simulation tests.</span>
-                </div>
-                <input type="number" id="setting-latency" value="50">
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-info">
-                    <span class="setting-label">Log Verbosity</span>
-                    <span class="setting-desc">Level of detail in the System Event Log.</span>
-                </div>
-                <select style="width: 150px; padding: 8px;">
-                    <option>Info</option>
-                    <option>Debug</option>
-                    <option>Error Only</option>
-                </select>
-            </div>
-
-            <div style="margin-top: 20px;">
-                <button class="btn-stop" onclick="saveConfiguration()">Save Configuration</button>
-            </div>
+        <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="btn-stop" id="btn-save-config">Save Configuration</button>
+          <button class="btn-stop" id="btn-check-conn">Check Connection</button>
         </div>
+
+        <div class="hint" id="conn-hint"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">About</div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">UI Mode</span>
+            <span class="setting-desc">When served by backend, requests are same-origin (no CORS headaches).</span>
+          </div>
+          <div class="file-pill" id="ui-mode">unknown</div>
+        </div>
+      </div>
     </div>
 
-</main>
+  </main>
 
-<script>
-    // --- BACKEND CONFIGURATION ---
-    // Backend base URL (priority: ?backend=... then localStorage, then default)
-    const qs = new URLSearchParams(location.search);
+  <script>
+    // -----------------------------------------------------------------------------------
+    // Backend URL resolution (production compatible)
+    // - If served by backend: use same-origin (window.location.origin)
+    // - If opened as file:// : use ?backend=... or localStorage BACKEND_URL or default
+    // -----------------------------------------------------------------------------------
+    const isFile = window.location.protocol === "file:";
+    const qs = new URLSearchParams(window.location.search);
     const stored = localStorage.getItem("BACKEND_URL");
-    const CONTROL_API_BASE = (qs.get("backend") || stored || "http://localhost:8000").replace(/\/$/, "");
 
+    const CONTROL_API_BASE = (
+      !isFile
+        ? window.location.origin
+        : (qs.get("backend") || stored || "http://localhost:8000")
+    ).replace(/\/$/, "");
+
+    // UI labels
     document.getElementById("backend-url-label").textContent = CONTROL_API_BASE;
+    document.getElementById("setting-api-url").value = CONTROL_API_BASE;
+    document.getElementById("ui-mode").textContent = isFile ? "file:// (manual endpoint)" : "served by backend (same-origin)";
 
-    // --- API HELPER ---
+    // -----------------------------------------------------------------------------------
+    // API helper
+    // -----------------------------------------------------------------------------------
     async function callApi(path, options = {}) {
-        const url = CONTROL_API_BASE + path;
-        const res = await fetch(url, {
-            headers: { "Content-Type": "application/json" },
-            ...options
-        });
+      const url = CONTROL_API_BASE + path;
+      const res = await fetch(url, {
+        headers: { "Content-Type": "application/json" },
+        ...options
+      });
 
-        if (!res.ok) {
-            const text = await res.text().catch(() => "");
-            throw new Error(`HTTP ${res.status}${text ? `: ${text}` : ""}`);
-        }
+      // Try to extract json error if possible
+      const ct = res.headers.get("content-type") || "";
+      const body = ct.includes("application/json") ? await res.json().catch(() => null) : await res.text().catch(() => "");
 
-        const ct = res.headers.get("content-type") || "";
-        if (ct.includes("application/json")) return await res.json();
-        return {};
+      if (!res.ok) {
+        const msg = typeof body === "string" ? body : (body && (body.message || body.error)) || "";
+        throw new Error(`HTTP ${res.status}${msg ? `: ${msg}` : ""}`);
+      }
+
+      return typeof body === "string" ? {} : (body || {});
     }
 
-    // --- VIEW NAVIGATION ---
+    // -----------------------------------------------------------------------------------
+    // View navigation
+    // -----------------------------------------------------------------------------------
     function switchView(viewName) {
-        // Hide all views
-        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
-        // Show selected
-        document.getElementById(`view-${viewName}`).classList.add('active');
-        document.getElementById(`nav-${viewName}`).classList.add('active');
+      document.getElementById(`view-${viewName}`).classList.add('active');
+      document.getElementById(`nav-${viewName}`).classList.add('active');
 
-        log(`Switched to ${viewName} view.`, 'sys');
+      log(`Switched to ${viewName} view.`, 'sys');
+      if (viewName === "models") refreshModelsView();
     }
 
-    // --- STATE MANAGEMENT ---
-    const state = {
-        latencyHistory: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    };
-
+    // -----------------------------------------------------------------------------------
+    // Chart / state
+    // -----------------------------------------------------------------------------------
+    const state = { latencyHistory: [0,0,0,0,0,0,0,0,0,0] };
     let chartInstance = null;
 
-    // --- CHART SETUP ---
     function initChart() {
-        const ctx = document.getElementById('latencyChart').getContext('2d');
-        const gradient = ctx.createLinearGradient(0, 0, 0, 150);
-        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
-        gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+      const ctx = document.getElementById('latencyChart').getContext('2d');
+      const gradient = ctx.createLinearGradient(0, 0, 0, 150);
+      gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
+      gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
 
-        chartInstance = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-                datasets: [{
-                    label: 'Latency (ms)',
-                    data: state.latencyHistory,
-                    borderColor: '#3b82f6',
-                    backgroundColor: gradient,
-                    borderWidth: 2,
-                    tension: 0.4,
-                    fill: true,
-                    pointRadius: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { display: false },
-                    y: {
-                        display: true,
-                        grid: { color: 'rgba(255,255,255,0.05)' },
-                        ticks: { color: '#64748b', font: { size: 10 } }
-                    }
-                },
-                animation: { duration: 500 }
+      chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['1','2','3','4','5','6','7','8','9','10'],
+          datasets: [{
+            label: 'Latency (ms)',
+            data: state.latencyHistory,
+            borderColor: '#3b82f6',
+            backgroundColor: gradient,
+            borderWidth: 2,
+            tension: 0.4,
+            fill: true,
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { display: false },
+            y: {
+              display: true,
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: { color: '#64748b', font: { size: 10 } }
             }
-        });
+          },
+          animation: { duration: 300 }
+        }
+      });
     }
 
-    // --- LOGGING ---
+    // -----------------------------------------------------------------------------------
+    // Terminal logging
+    // -----------------------------------------------------------------------------------
     function log(msg, type = 'info') {
-        const logBox = document.getElementById('log-box');
-        const line = document.createElement('div');
-        line.className = 'log-line';
+      const logBox = document.getElementById('log-box');
+      const line = document.createElement('div');
+      line.className = 'log-line';
 
-        const time = new Date().toLocaleTimeString('en-US', { hour12: false });
-        let typeClass = 'log-info';
-        let prefix = '[INFO]';
+      const t = new Date().toLocaleTimeString('en-US', { hour12: false });
+      let typeClass = 'log-info';
+      let prefix = '[INFO]';
+      if (type === 'error') { typeClass = 'log-error'; prefix = '[ERR]'; }
+      if (type === 'warn')  { typeClass = 'log-warn';  prefix = '[WARN]'; }
+      if (type === 'sys')   { typeClass = 'log-sys';   prefix = '[SYSTEM]'; }
 
-        if (type === 'error') { typeClass = 'log-error'; prefix = '[ERR]'; }
-        if (type === 'warn') { typeClass = 'log-warn'; prefix = '[WARN]'; }
-        if (type === 'sys') { typeClass = 'log-sys'; prefix = '[SYSTEM]'; }
-
-        line.innerHTML = `<span class="log-time">${time}</span> <span class="${typeClass}">${prefix}</span> ${msg}`;
-        logBox.insertBefore(line, logBox.firstChild);
-        if (logBox.children.length > 50) logBox.lastChild.remove();
+      line.innerHTML = `<span class="log-time">${t}</span> <span class="${typeClass}">${prefix}</span> ${msg}`;
+      logBox.insertBefore(line, logBox.firstChild);
+      if (logBox.children.length > 80) logBox.lastChild.remove();
     }
 
-    // --- REFRESH STATUS FROM BACKEND ---
+    function setBackendOnline(isOnline) {
+      const dot = document.getElementById("backend-dot");
+      const label = document.getElementById("backend-state");
+      if (isOnline) {
+        dot.classList.remove("offline");
+        label.textContent = "Backend: OK";
+      } else {
+        dot.classList.add("offline");
+        label.textContent = "Backend: OFFLINE";
+      }
+    }
+
+    // -----------------------------------------------------------------------------------
+    // Status refresh
+    // -----------------------------------------------------------------------------------
+    function setBadge(id, running) {
+      const el = document.getElementById(id);
+      el.innerText = running ? "RUNNING" : "STOPPED";
+      el.className = "status-badge " + (running ? "status-running" : "status-stopped");
+    }
+
     async function refreshStatus() {
-        try {
-            const status = await callApi("/api/status");
+      try {
+        // Use /health to quickly detect backend availability
+        await callApi("/health", { method: "GET" });
+        setBackendOnline(true);
 
-            const nnRunning = !!status.nn_running;
-            const tfRunning = !!status.transformer_running;
-            const activeModel = (status.active_model || "").toLowerCase();
+        const status = await callApi("/api/status");
+        const nnRunning = !!status.nn_running;
+        const tfRunning = !!status.transformer_running;
+        const activeModel = (status.active_model || "").toLowerCase();
 
-            // badges
-            const nnBadge = document.getElementById("badge-nn");
-            nnBadge.innerText = nnRunning ? "RUNNING" : "STOPPED";
-            nnBadge.className = "status-badge " + (nnRunning ? "status-running" : "status-stopped");
+        setBadge("badge-nn", nnRunning);
+        setBadge("badge-tf", tfRunning);
 
-            const tfBadge = document.getElementById("badge-tf");
-            tfBadge.innerText = tfRunning ? "RUNNING" : "STOPPED";
-            tfBadge.className = "status-badge " + (tfRunning ? "status-running" : "status-stopped");
+        // Active model label + highlight
+        const activeLabel = document.getElementById("active-model-label");
+        const cardNN = document.getElementById("card-nn");
+        const cardTF = document.getElementById("card-tf");
 
-            // active model label + highlight
-            const activeLabel = document.getElementById("active-model-label");
-            const cardNN = document.getElementById("card-nn");
-            const cardTF = document.getElementById("card-tf");
+        cardNN.classList.remove("active-selection");
+        cardTF.classList.remove("active-selection");
 
-            cardNN.classList.remove("active-selection");
-            cardTF.classList.remove("active-selection");
-
-            if (activeModel === "nn") {
-                activeLabel.innerText = "NEURAL NETWORK";
-                activeLabel.style.color = "var(--primary)";
-                cardNN.classList.add("active-selection");
-            } else if (activeModel === "transformer") {
-                activeLabel.innerText = "TRANSFORMER";
-                activeLabel.style.color = "var(--accent)";
-                cardTF.classList.add("active-selection");
-            } else {
-                activeLabel.innerText = "None";
-                activeLabel.style.color = "var(--text-dim)";
-            }
-
-            log("Status refreshed successfully.", "sys");
-        } catch (err) {
-            log(`API Error (/api/status): ${err.message}`, "error");
+        if (activeModel === "nn") {
+          activeLabel.innerText = "NEURAL NETWORK";
+          activeLabel.style.color = "var(--primary)";
+          cardNN.classList.add("active-selection");
+        } else if (activeModel === "transformer") {
+          activeLabel.innerText = "TRANSFORMER";
+          activeLabel.style.color = "var(--accent)";
+          cardTF.classList.add("active-selection");
+        } else {
+          activeLabel.innerText = "None";
+          activeLabel.style.color = "var(--text-dim)";
         }
+
+        // Keep selects aligned
+        document.getElementById("model-select").value = (activeModel === "transformer") ? "transformer" : "nn";
+
+        log("Status refreshed successfully.", "sys");
+      } catch (err) {
+        setBackendOnline(false);
+        log(`Backend unreachable: ${err.message}`, "error");
+      }
     }
 
-    // --- APPLY STRATEGY ---
+    // -----------------------------------------------------------------------------------
+    // Actions
+    // -----------------------------------------------------------------------------------
     async function applyStrategy() {
-        const selected = document.getElementById("model-select").value;
-        try {
-            await callApi("/api/set_active_model", {
-                method: "POST",
-                body: JSON.stringify({ model: selected })
-            });
-            log(`Active model set to ${selected.toUpperCase()}.`, "sys");
-        } catch (err) {
-            log(`Failed to set active model: ${err.message}`, "error");
-        }
-        refreshStatus();
+      const selected = document.getElementById("model-select").value;
+      try {
+        await callApi("/api/set_active_model", {
+          method: "POST",
+          body: JSON.stringify({ model: selected })
+        });
+        log(`Active model set to ${selected.toUpperCase()}.`, "sys");
+      } catch (err) {
+        log(`Failed to set active model: ${err.message}`, "error");
+      }
+      refreshStatus();
     }
 
-    // --- RUN PREDICTION TEST ---
     async function runPredictionTest() {
-        const model = document.getElementById("test-model-select").value;
-        const resultBox = document.getElementById("test-result");
-        const btn = document.getElementById("btn-test-predict");
+      const model = document.getElementById("test-model-select").value;
+      const resultBox = document.getElementById("test-result");
+      const btn = document.getElementById("btn-test-predict");
 
-        btn.disabled = true;
-        btn.innerText = "Running...";
-        resultBox.innerText = "Sending request...";
-        resultBox.style.borderLeftColor = "var(--accent)";
+      btn.disabled = true;
+      btn.innerText = "Running...";
+      resultBox.innerText = "Sending request...";
+      resultBox.style.borderLeftColor = "var(--accent)";
 
-        const start = performance.now();
+      const start = performance.now();
+      try {
+        const res = await callApi("/api/test_predict", {
+          method: "POST",
+          body: JSON.stringify({ model })
+        });
+        const latency = Math.round(performance.now() - start);
+        const action = res.action ?? "Unknown";
+
+        resultBox.innerHTML = `Action: <b>${action}</b> | Latency: ${latency}ms`;
+        log(`Test (${model}): ${action} in ${latency}ms`, "info");
+
+        state.latencyHistory.shift();
+        state.latencyHistory.push(latency);
+        chartInstance.update();
+      } catch (err) {
+        resultBox.innerHTML = `<span style="color:var(--danger)">FAILED</span> ${err.message}`;
+        log(`Test failed: ${err.message}`, "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Run Prediction";
+      }
+    }
+
+    // Start/stop helpers with button disable
+    async function withBtn(btn, fn) {
+      btn.disabled = true;
+      const old = btn.innerText;
+      try { await fn(); }
+      finally { btn.disabled = false; btn.innerText = old; }
+    }
+
+    async function startService(which) {
+      await callApi(which === "nn" ? "/api/start_nn" : "/api/start_transformer", { method: "POST" });
+      log(`${which.toUpperCase()} start requested.`, "sys");
+      setTimeout(refreshStatus, 800);
+    }
+
+    async function stopService(which) {
+      await callApi(which === "nn" ? "/api/stop_nn" : "/api/stop_transformer", { method: "POST" });
+      log(`${which.toUpperCase()} stop requested.`, "warn");
+      setTimeout(refreshStatus, 800);
+    }
+
+    async function startAll() {
+      log("Starting all services…", "sys");
+      try { await callApi("/api/start_nn", { method: "POST" }); } catch(e){ log(e.message,"error"); }
+      try { await callApi("/api/start_transformer", { method: "POST" }); } catch(e){ log(e.message,"error"); }
+      setTimeout(refreshStatus, 1000);
+    }
+
+    async function stopAll() {
+      log("Stopping all services…", "warn");
+      try { await callApi("/api/stop_nn", { method: "POST" }); } catch(e){ log(e.message,"error"); }
+      try { await callApi("/api/stop_transformer", { method: "POST" }); } catch(e){ log(e.message,"error"); }
+      setTimeout(refreshStatus, 1000);
+    }
+
+    // -----------------------------------------------------------------------------------
+    // Models view (real backend data)
+    // - Uses /api/status and /api/service_log/<name>
+    // - Optionally uses /api/model_files (if backend implements it)
+    // -----------------------------------------------------------------------------------
+    async function refreshModelsView() {
+      try {
+        const st = await callApi("/api/status");
+        const nnRunning = !!st.nn_running;
+        const tfRunning = !!st.transformer_running;
+        const active = (st.active_model || "").toLowerCase();
+
+        document.getElementById("tbl-nn-status").textContent = nnRunning ? "running" : "stopped";
+        document.getElementById("tbl-tf-status").textContent = tfRunning ? "running" : "stopped";
+        document.getElementById("tbl-nn-active").textContent = active === "nn" ? "active" : "—";
+        document.getElementById("tbl-tf-active").textContent = active === "transformer" ? "active" : "—";
+
+        // Optional: model files endpoint
         try {
-            const res = await callApi("/api/test_predict", {
-                method: "POST",
-                body: JSON.stringify({ model })
-            });
-            const latency = Math.round(performance.now() - start);
-            const action = res.action ?? "Unknown";
-
-            resultBox.innerHTML = `Action: <b>${action}</b> | Latency: ${latency}ms`;
-            log(`Test (${model}): ${action} in ${latency}ms`, "info");
-
-            // push to chart
-            state.latencyHistory.shift();
-            state.latencyHistory.push(latency);
-            chartInstance.update();
-
-        } catch (err) {
-            resultBox.innerHTML = `<span style="color:var(--danger)">FAILED</span> ${err.message}`;
-            log(`Test failed: ${err.message}`, "error");
-        } finally {
-            btn.disabled = false;
-            btn.innerText = "Run Prediction";
+          const mf = await callApi("/api/model_files");
+          document.querySelector("#pill-nn span").textContent = mf.nn || "unknown";
+          document.querySelector("#pill-tf span").textContent = mf.transformer || "unknown";
+        } catch {
+          document.querySelector("#pill-nn span").textContent = "unknown (endpoint missing)";
+          document.querySelector("#pill-tf span").textContent = "unknown (endpoint missing)";
         }
+      } catch (e) {
+        log(`Models view refresh failed: ${e.message}`, "error");
+      }
     }
 
-    // --- SAVE CONFIGURATION ---
+    async function showLogs(serviceName) {
+      try {
+        const res = await callApi(`/api/service_log/${serviceName}`);
+        const logText = (res.log || "").trim();
+        if (!logText) {
+          log(`No logs for ${serviceName} yet.`, "warn");
+          return;
+        }
+        // Show last lines in terminal
+        log(`--- ${serviceName} logs (last 200 lines) ---`, "sys");
+        logText.split("\n").slice(-20).forEach(line => log(line, "info"));
+      } catch (e) {
+        log(`Failed to fetch ${serviceName} logs: ${e.message}`, "error");
+      }
+    }
+
+    // -----------------------------------------------------------------------------------
+    // Settings
+    // -----------------------------------------------------------------------------------
     function saveConfiguration() {
-        const apiUrl = document.getElementById("setting-api-url").value;
-        localStorage.setItem("BACKEND_URL", apiUrl);
-        log("Configuration saved. Reload page to apply new backend URL.", "sys");
+      const apiUrl = document.getElementById("setting-api-url").value.trim().replace(/\/$/, "");
+      localStorage.setItem("BACKEND_URL", apiUrl);
+      document.getElementById("conn-hint").textContent = `Saved. Reload if opened as file://. Current endpoint: ${apiUrl}`;
+      log("Configuration saved.", "sys");
     }
 
-    // --- INIT ---
+    async function checkConnection() {
+      const hint = document.getElementById("conn-hint");
+      hint.textContent = "Checking backend...";
+      try {
+        await callApi("/health");
+        hint.textContent = "Backend OK ✅";
+        log("Backend health OK.", "sys");
+      } catch (e) {
+        hint.textContent = `Backend failed ❌ (${e.message})`;
+        log(`Backend check failed: ${e.message}`, "error");
+      }
+    }
+
+    // -----------------------------------------------------------------------------------
+    // Init
+    // -----------------------------------------------------------------------------------
+    let autoTimer = null;
+
     window.onload = () => {
-        initChart();
+      initChart();
 
-        // Service control buttons
-        document.getElementById("btn-start-nn").addEventListener("click", async () => {
-            try {
-                await callApi("/api/start_nn", { method: "POST" });
-                log("NN start requested.", "sys");
-            } catch (e) {
-                log(e.message, "error");
-            }
-            setTimeout(refreshStatus, 800);
-        });
+      // Buttons
+      document.getElementById("btn-start-nn").addEventListener("click", (ev) => withBtn(ev.target, () => startService("nn")));
+      document.getElementById("btn-stop-nn").addEventListener("click", (ev) => withBtn(ev.target, () => stopService("nn")));
+      document.getElementById("btn-start-tf").addEventListener("click", (ev) => withBtn(ev.target, () => startService("transformer")));
+      document.getElementById("btn-stop-tf").addEventListener("click", (ev) => withBtn(ev.target, () => stopService("transformer")));
 
-        document.getElementById("btn-stop-nn").addEventListener("click", async () => {
-            try {
-                await callApi("/api/stop_nn", { method: "POST" });
-                log("NN stop requested.", "sys");
-            } catch (e) {
-                log(e.message, "error");
-            }
-            setTimeout(refreshStatus, 800);
-        });
+      document.getElementById("btn-start-all").addEventListener("click", (ev) => withBtn(ev.target, startAll));
+      document.getElementById("btn-stop-all").addEventListener("click", (ev) => withBtn(ev.target, stopAll));
 
-        document.getElementById("btn-start-tf").addEventListener("click", async () => {
-            try {
-                await callApi("/api/start_transformer", { method: "POST" });
-                log("Transformer start requested.", "sys");
-            } catch (e) {
-                log(e.message, "error");
-            }
-            setTimeout(refreshStatus, 800);
-        });
-
-        document.getElementById("btn-stop-tf").addEventListener("click", async () => {
-            try {
-                await callApi("/api/stop_transformer", { method: "POST" });
-                log("Transformer stop requested.", "sys");
-            } catch (e) {
-                log(e.message, "error");
-            }
-            setTimeout(refreshStatus, 800);
-        });
-
-        document.getElementById("btn-start-all").addEventListener("click", async () => {
-            log("Starting all services…", "sys");
-            try { await callApi("/api/start_nn", { method: "POST" }); } catch(e){ log(e.message,"error"); }
-            try { await callApi("/api/start_transformer", { method: "POST" }); } catch(e){ log(e.message,"error"); }
-            setTimeout(refreshStatus, 1000);
-        });
-
-        document.getElementById("btn-stop-all").addEventListener("click", async () => {
-            log("Stopping all services…", "warn");
-            try { await callApi("/api/stop_nn", { method: "POST" }); } catch(e){ log(e.message,"error"); }
-            try { await callApi("/api/stop_transformer", { method: "POST" }); } catch(e){ log(e.message,"error"); }
-            setTimeout(refreshStatus, 1000);
-        });
-
-        // Refresh button
-        document.getElementById("refresh-status").addEventListener("click", () => {
-            log("Status refresh requested...", "sys");
-            refreshStatus();
-        });
-
-        // Apply model strategy
-        document.getElementById("btn-apply-model").addEventListener("click", applyStrategy);
-
-        // Test prediction
-        document.getElementById("btn-test-predict").addEventListener("click", runPredictionTest);
-
-        log("Dashboard ready. Fetching initial status...", "sys");
-
-        // Initial status fetch
+      document.getElementById("refresh-status").addEventListener("click", () => {
+        log("Status refresh requested...", "sys");
         refreshStatus();
-    };
+      });
 
-</script>
+      document.getElementById("btn-apply-model").addEventListener("click", applyStrategy);
+      document.getElementById("btn-test-predict").addEventListener("click", runPredictionTest);
+
+      // Models view buttons
+      document.getElementById("btn-refresh-models").addEventListener("click", refreshModelsView);
+      document.getElementById("tbl-nn-load").addEventListener("click", () => callApi("/api/set_active_model", { method:"POST", body: JSON.stringify({model:"nn"}) }).then(() => { log("Loaded NN (set active).","sys"); refreshStatus(); refreshModelsView(); }).catch(e => log(e.message,"error")));
+      document.getElementById("tbl-tf-load").addEventListener("click", () => callApi("/api/set_active_model", { method:"POST", body: JSON.stringify({model:"transformer"}) }).then(() => { log("Loaded Transformer (set active).","sys"); refreshStatus(); refreshModelsView(); }).catch(e => log(e.message,"error")));
+      document.getElementById("tbl-nn-logs").addEventListener("click", () => showLogs("nn"));
+      document.getElementById("tbl-tf-logs").addEventListener("click", () => showLogs("transformer"));
+
+      // Settings buttons
+      document.getElementById("btn-save-config").addEventListener("click", saveConfiguration);
+      document.getElementById("btn-check-conn").addEventListener("click", checkConnection);
+
+      // Auto refresh toggle
+      const autoBox = document.getElementById("setting-autorefresh");
+      autoBox.addEventListener("change", () => {
+        if (autoBox.checked) {
+          autoTimer = setInterval(refreshStatus, 3000);
+          log("Auto-refresh enabled.", "sys");
+        } else {
+          if (autoTimer) clearInterval(autoTimer);
+          autoTimer = null;
+          log("Auto-refresh disabled.", "warn");
+        }
+      });
+
+      // Initial
+      log("Dashboard ready. Fetching initial status...", "sys");
+      refreshStatus();
+      checkConnection();
+
+      if (autoBox.checked) autoTimer = setInterval(refreshStatus, 3000);
+    };
+  </script>
 </body>
 </html>
