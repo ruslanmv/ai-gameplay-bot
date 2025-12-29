@@ -89,3 +89,5 @@ Desktop.ini
 *.bak
 *.swp
 *~.nib
+.gunicorn.pid
+.setup_done
