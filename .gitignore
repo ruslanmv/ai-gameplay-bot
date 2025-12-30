@@ -98,3 +98,8 @@ copy *
 patch_add_stream_features.sh
 patch_enterprise_backend.sh
 /.patch_backup
+* copy.*
+* copy.py
+/data/raw
+patch_backend_for_new_ui_v3.sh
+scripts/smoke_e2e.py.bak.1767053264
