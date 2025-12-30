@@ -183,6 +183,8 @@ def main() -> int:
                 timeout=5,
             )
             print(f"[OK] /api/test_predict ({model}) ->", r.status_code, r.json())
+            if r.status_code != 200:
+                raise RuntimeError(f"/api/test_predict failed for {model}: {r.status_code} {r.text}")
 
         print("\n[PASS] End-to-end smoke test succeeded.")
         print(f"UI available at: {CB_URL}/")
