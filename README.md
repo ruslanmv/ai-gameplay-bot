@@ -27,7 +27,7 @@
 </div>
 
 ## 🌟 Overview
-
+![](assets/2025-12-30-01-54-05.png)
 **AI Gameplay Bot** is a cutting-edge, production-ready platform that leverages deep learning and transformer architectures to create intelligent gaming automation for MMORPGs. The bot learns directly from gameplay videos (YouTube, Twitch), analyzes player actions, and maps them to inputs - just like humans learn to play games.
 
 This is the next evolution of the [BOT-MMORPG-AI](https://github.com/ruslanmv/BOT-MMORPG-AI) project, now enhanced with Generative AI, Reinforcement Learning, and enterprise-grade deployment capabilities.
@@ -138,7 +138,7 @@ cd frontend && python -m http.server 3000
 
 ---
 ![](assets/2025-12-30-01-50-53.png)
-
+![](assets/2025-12-30-01-53-18.png)
 ## 📚 Documentation
 
 ### 📖 Complete Guides
